@@ -3,5 +3,7 @@
     "flow.runOnAllFiles": true,
     "flow.useNPMPackagedFlow": true,
     "flow.useLSP": true,
+    "editor.formatOnSave": true,
+    "prettier.parser": "flow",
 
 }
