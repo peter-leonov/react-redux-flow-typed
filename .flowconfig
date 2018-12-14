@@ -1,0 +1,12 @@
+[ignore]
+<PROJECT_ROOT>/node_modules/*
+
+[libs]
+flow-typed
+
+[lints]
+all=error
+
+[options]
+all=true
+module.use_strict=true

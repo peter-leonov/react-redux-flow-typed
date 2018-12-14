@@ -1,0 +1,7 @@
+{
+    "flow.enabled": true,
+    "flow.runOnAllFiles": true,
+    "flow.useNPMPackagedFlow": true,
+    "flow.useLSP": true,
+
+}
