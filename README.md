@@ -1,3 +1,7 @@
+## Placeholders
+
+The rule of thumb is: if something gets fishy, then just provide more concrete types instead of `_`. Split the big `Props` in `OwnProps`, `StateProps` and `DispatchProps` and provide to the `connect()` function.
+
 ## Error messages
 
 If you find that type error messages Flow gives you can be better, don't wait for the next release of Flow and just replace `_` type placeholders with concrete types.

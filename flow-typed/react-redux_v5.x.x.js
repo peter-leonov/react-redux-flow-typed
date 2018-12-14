@@ -31,6 +31,9 @@ declare module "react-redux" {
 
   declare type MapStateToProps<-S, -OP, +SP> = (state: S, ownProps: OP) => SP;
 
+  // declare type MapDispatchToProps<-A, +DP: { [string]: () => A }> = DP;
+  declare type MapDispatchToProps<-A, +DP: string> = DP;
+
   // Same as above, but the derivation is based on dispatch instead of state.
   declare type MapDispatchToPropsFn<-D, -OP, +DP> = (
     dispatch: D,
@@ -58,9 +61,21 @@ declare module "react-redux" {
   //     mapDispatchToProps: DP,
   // ): Connector<S, D, OP, React$ComponentType<{| ...OP, ...SP, ...DP |}>>;
 
-  declare export function connect<-P, +S, +SP>(
+  // adding $Shape<P> everywhere makes error messages clearer
+  declare export function connect<-P, -S, SP: $Shape<P>>(
     mapStateToProps: MapStateToProps<S, $Diff<P, SP>, SP>,
   ): Connector<$Diff<P, SP>, React$ComponentType<P>>;
+
+  declare export function connect<
+    -P,
+    -S,
+    -A,
+    SP: $Shape<P>,
+    DP: $Shape<P> & { [string]: (any) => A },
+  >(
+    mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
+    mapDispatchToProps: DP,
+  ): Connector<$Diff<$Diff<P, SP>, DP>, React$ComponentType<P>>;
 
   // declare export function connect<S, D, OP, SP, DP, MP>(
   //   mapStateToProps: MapStateToProps<S, OP, DP>,
