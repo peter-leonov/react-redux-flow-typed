@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
   state1: state => state.state1,
   doesNotExistInOwnProps: state => "foobar",
 });
-connect < State, OwnProps, _ > mapStateToProps(A_);
+connect < OwnProps, State, _ > mapStateToProps(A_);
 ```
 
 will give a type error in `react-redux_v5.x.x` file, while the following code gives error in the `mapStateToProps` function referring `StateProps` type:
@@ -26,8 +26,16 @@ const mapStateToProps = state => ({
   state1: state => state.state1,
   doesNotExistInOwnProps: state => "foobar",
 });
-connect < State, OwnProps, StateProps > mapStateToProps(A_);
+connect < OwnProps, State, StateProps > mapStateToProps(A_);
 ```
+
+You can also ommit `State` parameter like this:
+
+```js
+connect < OwnProps, _, _ > mapStateToProps(A_);
+```
+
+but then Flow will be only able to infer the proper type for the state argument and match the return value type if the exact `State` type is specified either for the `mapStateToProps` or for each state getter function. Personally I prefer just providing the `State` to the `connect()` function explicitly and allow flow to match it all together.
 
 ## Non-strict `OwnTypes`
 

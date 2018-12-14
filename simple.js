@@ -8,10 +8,8 @@ type State = {|
   +state2: number,
 |};
 
-const getState1 = (state: State) => state.state1;
-const getState2 = (state: State) => state.state2;
-
-type Dispatch = () => void;
+const getState1 = state => state.state1;
+const getState2 = state => state.state2;
 
 // component
 
@@ -43,6 +41,6 @@ const mapStateToProps = state => ({
   // state3: getState2(state)
 });
 
-export const C = connect<OwnProps, _, _>(mapStateToProps)(WC);
+export const C = connect<OwnProps, State, _>(mapStateToProps)(WC);
 
 const render = <C own1={new Date()} />;

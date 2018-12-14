@@ -34,13 +34,13 @@ declare module "react-redux" {
   // Same as above, but the derivation is based on dispatch instead of state.
   declare type MapDispatchToPropsFn<-D, -OP, +DP> = (
     dispatch: D,
-    ownProps: OP
+    ownProps: OP,
   ) => DP;
 
   declare type MergeProps<-SP, -DP, -OP, +MP> = (
     stateProps: SP,
     dispatchProps: DP,
-    ownProps: OP
+    ownProps: OP,
   ) => MP;
 
   // The connector function actaully perfoms the wrapping, giving us a connected
@@ -59,7 +59,7 @@ declare module "react-redux" {
   // ): Connector<S, D, OP, React$ComponentType<{| ...OP, ...SP, ...DP |}>>;
 
   declare export function connect<-OP, +S, +SP>(
-    mapStateToProps: MapStateToProps<S, OP, SP>
+    mapStateToProps: MapStateToProps<S, OP, SP>,
   ): Connector<OP, React$ComponentType<{| ...OP, ...SP |}>>;
 
   // declare export function connect<S, D, OP, SP, DP, MP>(
