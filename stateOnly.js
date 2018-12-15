@@ -11,7 +11,24 @@ type State = {|
 const getState1 = state => state.state1;
 const getState2 = state => state.state2;
 
+type Action1 = {|
+  type: "ACTION1",
+  payload: string,
+|};
+type Action2 = {|
+  type: "ACTION2",
+  payload: number,
+|};
+type Action = Action1 | Action2;
+
+type Dispatch = Action => Action;
+
 // component
+
+type OnlyOwnProps = {|
+  own1: string,
+  dispatch: Dispatch,
+|};
 
 type OwnProps = {|
   own1: string,
@@ -27,21 +44,8 @@ type Props = {
   ...StateProps,
 };
 
-class WC extends Component<Props, {}> {
-  render() {
-    const { own1, state1, state2, ...rest } = this.props;
-    this.props.own1.toString();
-    return null;
-  }
-}
-
-class OwnOnly extends Component<OwnProps, {}> {
-  render() {
-    const { own1 } = this.props;
-    (own1: string);
-    return null;
-  }
-}
+class ComponentOnlyOwn extends Component<OnlyOwnProps, {}> {}
+class ComponentProps extends Component<Props, {}> {}
 
 const mapStateToProps = (state, ownProps) => {
   // // $FlowFixMe state1 is missing in Props
@@ -52,40 +56,45 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export const C = connect<Props, State, _>(mapStateToProps)(WC);
+export const C = connect<Props, State, _>(mapStateToProps)(ComponentProps);
 
 <C own1="" nonExisting="sdsd" />;
 
 export const C1 = connect<Props, State, _>(
   mapStateToProps,
   null,
-)(WC);
+)(ComponentProps);
+export const c1 = <C1 own1="foo" />;
 
 export const C2 = connect<Props, State, _>(
   mapStateToProps,
   null,
   null,
-)(WC);
+)(ComponentProps);
+export const c2 = <C2 own1="foo" />;
 
 export const C3 = connect<Props, State, _>(
   mapStateToProps,
   null,
   null,
-)(WC);
+)(ComponentProps);
+export const c3 = <C3 own1="foo" />;
 
-export const C4 = connect<Props, State, _>(
+export const OnlyOwn1 = connect<OnlyOwnProps, Action, _>(
   null,
   null,
   null,
   null,
-)(WC);
+)(ComponentOnlyOwn);
+export const onlyOwn1 = <OnlyOwn1 own1="foo" />;
 
-export const C5 = connect<Props, State, _>(
+export const OnlyOwn2 = connect<OnlyOwnProps, Action, _>(
   null,
   null,
   null,
   { pure: false },
-)(WC);
+)(ComponentOnlyOwn);
+export const onlyOwn2 = <OnlyOwn1 own1="foo" />;
 
 const equalNoop = (next, prev) => {
   (next: {||});
@@ -93,7 +102,7 @@ const equalNoop = (next, prev) => {
   return true;
 };
 
-export const C6 = connect<OwnProps, State, _>(
+export const C6 = connect<OnlyOwnProps, Action, _>(
   null,
   null,
   null,
@@ -101,10 +110,11 @@ export const C6 = connect<OwnProps, State, _>(
     pure: true,
     areStatesEqual: equalNoop,
     areOwnPropsEqual: (next, prev) => {
-      (next: OwnProps);
-      (prev: OwnProps);
+      (next: OnlyOwnProps);
+      (prev: OnlyOwnProps);
       return true;
     },
     areStatePropsEqual: equalNoop,
   },
-)(OwnOnly);
+)(ComponentOnlyOwn);
+export const c6 = <C6 own1="foo" />;
