@@ -34,6 +34,16 @@ declare module "react-redux" {
     subKey?: string,
   ): Class<Provider<Store>>;
 
+  declare type Equal<T: {}> = (next: T, prev: T) => boolean;
+  declare export type Options<S, OP, SP, MP> = {|
+    pure?: boolean,
+    areStatesEqual?: Equal<S>,
+    areOwnPropsEqual?: Equal<OP>,
+    areStatePropsEqual?: Equal<SP>,
+    areMergedPropsEqual?: Equal<MP>,
+    storeKey?: string,
+  |};
+
   // A connected component wraps some component WC. Note that S (State) and D (Action)
   // are "phantom" type parameters, as they are not constrained by the definition but
   // rather by the context at the use site.
@@ -64,6 +74,7 @@ declare module "react-redux" {
     mapStateToProps?: null,
     mapDispatchToProps?: null,
     mergeProps?: null,
+    options?: ?Options<{||}, P, {||}, P>,
   ): Connector<$Diff<P, { dispatch: Dispatch<A> }>, React$ComponentType<P>>;
 
   // State only.
@@ -72,6 +83,7 @@ declare module "react-redux" {
     mapStateToProps: MapStateToProps<S, $Diff<P, SP>, SP>,
     mapDispatchToProps?: null,
     mergeProps?: null,
+    options?: ?Options<S, $Diff<P, SP>, SP, P>,
   ): Connector<$Diff<P, SP>, React$ComponentType<P>>;
 
   // State and dispatch.
@@ -87,6 +99,7 @@ declare module "react-redux" {
     mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
     mapDispatchToProps: DP,
     mergeProps?: null,
+    options?: ?Options<S, $Diff<$Diff<P, SP>, DP>, SP, P>,
   ): Connector<$Diff<$Diff<P, SP>, DP>, React$ComponentType<P>>;
 
   // function version
@@ -100,6 +113,7 @@ declare module "react-redux" {
     mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
     mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<$Diff<P, SP>, DP>, DP>,
     mergeProps?: null,
+    options?: ?Options<S, $Diff<$Diff<P, SP>, DP>, SP, P>,
   ): Connector<$Diff<$Diff<P, SP>, DP>, React$ComponentType<P>>;
 
   // Dispatch only.
@@ -113,6 +127,7 @@ declare module "react-redux" {
     mapStateToProps: null,
     mapDispatchToProps: DP,
     mergeProps?: null,
+    options?: ?Options<{||}, $Diff<P, DP>, {||}, P>,
   ): Connector<$Diff<P, DP>, React$ComponentType<P>>;
 
   // function version
@@ -124,6 +139,7 @@ declare module "react-redux" {
     mapStateToProps: null,
     mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<P, DP>, DP>,
     mergeProps?: null,
+    options?: ?Options<{||}, $Diff<P, DP>, {||}, P>,
   ): Connector<$Diff<P, DP>, React$ComponentType<P>>;
 
   // Merge props

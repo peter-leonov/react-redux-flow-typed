@@ -13,16 +13,32 @@ const getState2 = state => state.state2;
 
 // component
 
-type Props = {
+type OwnProps = {|
   own1: string,
+|};
+
+type StateProps = {|
   state1: string,
   state2: number,
+|};
+
+type Props = {
+  ...OwnProps,
+  ...StateProps,
 };
 
 class WC extends Component<Props, {}> {
   render() {
     const { own1, state1, state2, ...rest } = this.props;
     this.props.own1.toString();
+    return null;
+  }
+}
+
+class OwnOnly extends Component<OwnProps, {}> {
+  render() {
+    const { own1 } = this.props;
+    (own1: string);
     return null;
   }
 }
@@ -39,5 +55,56 @@ const mapStateToProps = (state, ownProps) => {
 export const C = connect<Props, State, _>(mapStateToProps)(WC);
 
 <C own1="" nonExisting="sdsd" />;
-// // $FlowFixMe missing own1 exists in Props
-// <C nonExisting="sdsd" />;
+
+export const C1 = connect<Props, State, _>(
+  mapStateToProps,
+  null,
+)(WC);
+
+export const C2 = connect<Props, State, _>(
+  mapStateToProps,
+  null,
+  null,
+)(WC);
+
+export const C3 = connect<Props, State, _>(
+  mapStateToProps,
+  null,
+  null,
+)(WC);
+
+export const C4 = connect<Props, State, _>(
+  null,
+  null,
+  null,
+  null,
+)(WC);
+
+export const C5 = connect<Props, State, _>(
+  null,
+  null,
+  null,
+  { pure: false },
+)(WC);
+
+const equalNoop = (next, prev) => {
+  (next: {||});
+  (prev: {||});
+  return true;
+};
+
+export const C6 = connect<OwnProps, State, _>(
+  null,
+  null,
+  null,
+  {
+    pure: true,
+    areStatesEqual: equalNoop,
+    areOwnPropsEqual: (next, prev) => {
+      (next: OwnProps);
+      (prev: OwnProps);
+      return true;
+    },
+    areStatePropsEqual: equalNoop,
+  },
+)(OwnOnly);
