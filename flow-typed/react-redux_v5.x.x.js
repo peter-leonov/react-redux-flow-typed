@@ -74,7 +74,7 @@ declare module "react-redux" {
   // Putting it all together.
   // Adding $Shape<P> everywhere makes error messages clearer.
 
-  // No args.
+  // Own Props only.
 
   declare export function connect<-P, -A>(
     mapStateToProps?: null,
