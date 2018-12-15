@@ -24,16 +24,7 @@
 */
 
 declare module "react-redux" {
-  declare export class Provider<Store> extends React$Component<{
-    store: Store,
-    children?: React$Node,
-  }> {}
-
-  declare export function createProvider<Store>(
-    storeKey?: string,
-    subKey?: string,
-  ): Class<Provider<Store>>;
-
+  // Typings for connect()
   declare type Equal<T: {}> = (next: T, prev: T) => boolean;
   declare export type Options<S, OP, SP, MP> = {|
     pure?: boolean,
@@ -147,4 +138,67 @@ declare module "react-redux" {
     mergeProps?: ?MergeProps<P, $Diff<P, DP>, {||}, DP>,
     options?: ?Options<{||}, $Diff<P, DP>, {||}, P>,
   ): Connector<$Diff<P, DP>, React$ComponentType<P>>;
+
+  // Typings for Provider
+  declare export class Provider<Store> extends React$Component<{
+    store: Store,
+    children?: React$Node,
+  }> {}
+
+  declare export function createProvider<Store>(
+    storeKey?: string,
+    subKey?: string,
+  ): Class<Provider<Store>>;
+
+  // Typings for connectAdvanced()
+  declare type ConnectAdvancedOptions = {
+    getDisplayName?: (name: string) => string,
+    methodName?: string,
+    renderCountProp?: string,
+    shouldHandleStateChanges?: boolean,
+    storeKey?: string,
+    withRef?: boolean,
+  };
+
+  declare type SelectorFactoryOptions<Com> = {
+    getDisplayName: (name: string) => string,
+    methodName: string,
+    renderCountProp: ?string,
+    shouldHandleStateChanges: boolean,
+    storeKey: string,
+    withRef: boolean,
+    displayName: string,
+    wrappedComponentName: string,
+    WrappedComponent: Com,
+  };
+
+  declare type MapStateToPropsEx<S: Object, SP: Object, RSP: Object> = (
+    state: S,
+    props: SP,
+  ) => RSP;
+
+  declare type SelectorFactory<
+    Com: React$ComponentType<*>,
+    Dispatch,
+    S: Object,
+    OP: Object,
+    EFO: Object,
+    CP: Object,
+  > = (
+    dispatch: Dispatch,
+    factoryOptions: SelectorFactoryOptions<Com> & EFO,
+  ) => MapStateToPropsEx<S, OP, CP>;
+
+  declare export function connectAdvanced<
+    Com: React$ComponentType<*>,
+    A,
+    S: Object,
+    OP: Object,
+    CP: Object,
+    EFO: Object,
+    ST: { [_: $Keys<Com>]: any },
+  >(
+    selectorFactory: SelectorFactory<Com, A, S, OP, EFO, CP>,
+    connectAdvancedOptions: ?(ConnectAdvancedOptions & EFO),
+  ): (component: Com) => React$ComponentType<OP> & $Shape<ST>;
 }
