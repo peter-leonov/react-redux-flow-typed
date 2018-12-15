@@ -1,3 +1,7 @@
+## Expectations
+
+Typings expect that the `dispatch()` function of you store is of type `Action => Action` which it is by default. If you use thunks then insted of giving `connect()` the raw `Action` type of your application provide a more complex type `Action | Thunk`. I like call it `Dispatchable` and decare once in, say, `rootReducer.js` or `createStore.js`.
+
 ## Placeholders
 
 The rule of thumb is: if something gets fishy, then just provide more concrete types instead of `_`. Split the big `Props` in `OwnProps`, `StateProps` and `DispatchProps` and provide to the `connect()` function.
