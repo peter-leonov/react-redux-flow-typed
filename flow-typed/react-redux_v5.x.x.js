@@ -92,6 +92,7 @@ declare module "react-redux" {
   >(
     mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
     mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<$Diff<P, SP>, DP>, DP>,
+    mergeProps?: null,
   ): Connector<$Diff<$Diff<P, SP>, DP>, React$ComponentType<P>>;
 
   // Dispatch only.
@@ -104,6 +105,7 @@ declare module "react-redux" {
   >(
     mapStateToProps: null,
     mapDispatchToProps: DP,
+    mergeProps?: null,
   ): Connector<$Diff<P, DP>, React$ComponentType<P>>;
 
   // function version
@@ -114,6 +116,7 @@ declare module "react-redux" {
   >(
     mapStateToProps: null,
     mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<P, DP>, DP>,
+    mergeProps?: null,
   ): Connector<$Diff<P, DP>, React$ComponentType<P>>;
 
   // declare export function connect<S, D, OP, SP, DP, MP>(
