@@ -2,6 +2,9 @@
 // https://medium.com/@samgoldman/ville-saukkonen-thanks-and-thanks-for-your-thoughtful-questions-24aedcfed518
 // https://github.com/facebook/flow/issues/7125
 
+// react-redux merges props as in:
+// Object.assign({}, ownProps, stateProps, dispatchProps)
+
 /*
   WC = Component being wrapped
   S = State
@@ -42,12 +45,6 @@ declare module "react-redux" {
     ownProps: OP,
   ) => DP;
 
-  declare type MergeProps<-SP, -DP, -OP, +MP> = (
-    stateProps: SP,
-    dispatchProps: DP,
-    ownProps: OP,
-  ) => MP;
-
   // Putting it all together.
   // Adding $Shape<P> everywhere makes error messages clearer.
 
@@ -75,7 +72,7 @@ declare module "react-redux" {
     -S,
     -A,
     SP: $Shape<P>,
-    DP: $Shape<P> & { [string]: (any) => A },
+    DP: $Shape<P> & { [string]: (...Array<any>) => A },
   >(
     mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
     mapDispatchToProps: DP,
@@ -88,7 +85,7 @@ declare module "react-redux" {
     -S,
     -A,
     SP: $Shape<P>,
-    DP: $Shape<P> & { [string]: (any) => A },
+    DP: $Shape<P> & { [string]: (...Array<any>) => A },
   >(
     mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
     mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<$Diff<P, SP>, DP>, DP>,
@@ -101,7 +98,7 @@ declare module "react-redux" {
   declare export function connect<
     -P,
     -A,
-    DP: $Shape<P> & { [string]: (any) => A },
+    DP: $Shape<P> & { [string]: (...Array<any>) => A },
   >(
     mapStateToProps: null,
     mapDispatchToProps: DP,
@@ -112,16 +109,74 @@ declare module "react-redux" {
   declare export function connect<
     -P,
     -A,
-    DP: $Shape<P> & { [string]: (any) => A },
+    DP: $Shape<P> & { [string]: (...Array<any>) => A },
   >(
     mapStateToProps: null,
     mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<P, DP>, DP>,
     mergeProps?: null,
   ): Connector<$Diff<P, DP>, React$ComponentType<P>>;
 
-  // declare export function connect<S, D, OP, SP, DP, MP>(
-  //   mapStateToProps: MapStateToProps<S, OP, DP>,
-  //   mapDispatchToProps: MapDispatchToPropsFn<D, OP, SP>,
-  //   mergeProps: MergeProps<SP, DP, OP, MP>,
-  // ): Connector<S, D, OP, React$ComponentType<MP>>;
+  // Merge props
+
+  declare type MergeProps<
+    +P,
+    -OP: $Shape<P>,
+    -SP: $Shape<P>,
+    -DP: $Shape<P>,
+  > = (stateProps: SP, dispatchProps: DP, ownProps: OP) => P;
+
+  // state only
+  declare export function connect<-P, -S, -A, SP: $Shape<P>>(
+    mapStateToProps: MapStateToProps<S, $Diff<P, SP>, SP>,
+    mapDispatchToProps: null,
+    mergeProps: MergeProps<P, $Diff<P, SP>, SP, {||}>,
+  ): Connector<$Diff<P, SP>, React$ComponentType<P>>;
+
+  // dispatch map version
+  declare export function connect<
+    -P,
+    -A,
+    DP: $Shape<P> & { [string]: (...Array<any>) => A },
+  >(
+    mapStateToProps: null,
+    mapDispatchToProps: DP,
+    mergeProps: MergeProps<P, $Diff<P, DP>, {||}, DP>,
+  ): Connector<$Diff<P, DP>, React$ComponentType<P>>;
+
+  // dispatch function version
+  declare export function connect<
+    -P,
+    -A,
+    DP: $Shape<P> & { [string]: (...Array<any>) => A },
+  >(
+    mapStateToProps: null,
+    mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<P, DP>, DP>,
+    mergeProps: MergeProps<P, $Diff<P, DP>, {||}, DP>,
+  ): Connector<$Diff<P, DP>, React$ComponentType<P>>;
+
+  // state and dispatch map version
+  declare export function connect<
+    -P,
+    -S,
+    -A,
+    SP: $Shape<P>,
+    DP: $Shape<P> & { [string]: (...Array<any>) => A },
+  >(
+    mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
+    mapDispatchToProps: DP,
+    mergeProps: MergeProps<P, $Diff<$Diff<P, SP>, DP>, SP, DP>,
+  ): Connector<$Diff<$Diff<P, SP>, DP>, React$ComponentType<P>>;
+
+  // state and dispatch function version
+  declare export function connect<
+    -P,
+    -S,
+    -A,
+    SP: $Shape<P>,
+    DP: $Shape<P> & { [string]: (...Array<any>) => A },
+  >(
+    mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
+    mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<$Diff<P, SP>, DP>, DP>,
+    mergeProps: MergeProps<P, $Diff<$Diff<P, SP>, DP>, SP, DP>,
+  ): Connector<$Diff<$Diff<P, SP>, DP>, React$ComponentType<P>>;
 }
