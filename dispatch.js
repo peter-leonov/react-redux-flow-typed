@@ -113,16 +113,16 @@ class WC2 extends Component<Props2, {}> {
   }
 }
 
-const mapDispatchToProps2 = {
-  action1,
-  action2,
-  // // $FlowFixMe undefined property action3
-  // action3: 1,
-};
-
 export const C2 = connect<Props2, Action, _>(
   null,
-  mapDispatchToProps2,
+  mapDispatchToProps,
 )(WC2);
 
 <C2 own1="" />;
+
+export const Cfn2 = connect<Props2, Action, _>(
+  null,
+  mapDispatchToPropsFn,
+)(WC2);
+
+<Cfn2 own1="" />;
