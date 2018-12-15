@@ -30,6 +30,11 @@ type Props = {|
   dispatch: Dispatch,
 |};
 
+type PropsNonStrict = {
+  own1: string,
+  dispatch: Dispatch,
+};
+
 class WC extends Component<Props, {}> {}
 
 export const C1 = connect<Props, Action, _>(
@@ -70,3 +75,11 @@ export const C6 = connect<Props, Action, _>(
   },
 )(WC);
 export const c6 = <C6 own1="foo" />;
+
+export const C7 = connect<Props, _>()(WC);
+export const c7 = <C7 own1="" />;
+
+class WC8 extends Component<PropsNonStrict, {}> {}
+
+export const C8 = connect<PropsNonStrict, _>()(WC8);
+export const c8 = <C8 own1="" />;
