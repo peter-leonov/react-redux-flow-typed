@@ -13,16 +13,6 @@ const getState2 = state => state.state2;
 
 // component
 
-// type OwnProps = {|
-//   own1: Date,
-//   // [string]: mixed,
-// |};
-
-// type StateProps = {|
-//   state1: string,
-//   state2: number,
-// |};
-
 type Props = {
   own1: string,
   state1: string,

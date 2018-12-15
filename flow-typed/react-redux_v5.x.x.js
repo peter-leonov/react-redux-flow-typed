@@ -29,6 +29,10 @@ declare module "react-redux" {
     getWrappedInstance(): React$ElementRef<WC>;
   }
 
+  // The connector function actaully perfoms the wrapping,
+  // returning a connected component.
+  declare type Connector<OP, WC> = (WC) => Class<ConnectedComponent<OP, WC>>;
+
   declare type MapStateToProps<-S, -OP, +SP> = (state: S, ownProps: OP) => SP;
 
   declare type Dispatch<A> = (action: A) => A;
@@ -44,19 +48,26 @@ declare module "react-redux" {
     ownProps: OP,
   ) => MP;
 
-  // The connector function actaully perfoms the wrapping, giving us a connected
-  // component.
-  declare type Connector<OP, WC> = (WC) => Class<ConnectedComponent<OP, WC>>;
-
   // Putting it all together.
   // Adding $Shape<P> everywhere makes error messages clearer.
 
-  // simple case
+  // No args.
+
+  declare export function connect<-P, -A>(
+    mapStateToProps?: null,
+    mapDispatchToProps?: null,
+    mergeProps?: null,
+  ): Connector<$Diff<P, { dispatch: Dispatch<A> }>, React$ComponentType<P>>;
+
+  // State only.
+
   declare export function connect<-P, -S, SP: $Shape<P>>(
     mapStateToProps: MapStateToProps<S, $Diff<P, SP>, SP>,
     mapDispatchToProps?: null,
     mergeProps?: null,
   ): Connector<$Diff<P, SP>, React$ComponentType<P>>;
+
+  // State and dispatch.
 
   // map version
   declare export function connect<
