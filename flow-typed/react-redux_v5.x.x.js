@@ -31,12 +31,10 @@ declare module "react-redux" {
 
   declare type MapStateToProps<-S, -OP, +SP> = (state: S, ownProps: OP) => SP;
 
-  // declare type MapDispatchToProps<-A, +DP: { [string]: () => A }> = DP;
-  declare type MapDispatchToProps<-A, +DP: string> = DP;
+  declare type Dispatch<A> = (action: A) => A;
 
-  // Same as above, but the derivation is based on dispatch instead of state.
-  declare type MapDispatchToPropsFn<-D, -OP, +DP> = (
-    dispatch: D,
+  declare type MapDispatchToPropsFn<A, -OP, +DP> = (
+    dispatch: Dispatch<A>,
     ownProps: OP,
   ) => DP;
 
@@ -51,21 +49,16 @@ declare module "react-redux" {
   declare type Connector<OP, WC> = (WC) => Class<ConnectedComponent<OP, WC>>;
 
   // Putting it all together.
-  // declare export function connect<S, D, OP, SP, DP>(
-  //     mapStateToProps: MapStateToProps<S, OP, SP>,
-  //     mapDispatchToProps: MapDispatchToPropsFn<D, OP, DP>,
-  // ): Connector<S, D, OP, React$ComponentType<{| ...OP, ...SP, ...DP |}>>;
+  // Adding $Shape<P> everywhere makes error messages clearer.
 
-  // declare export function connect<S, D, OP, SP, DP>(
-  //     mapStateToProps: MapStateToProps<S, OP, SP>,
-  //     mapDispatchToProps: DP,
-  // ): Connector<S, D, OP, React$ComponentType<{| ...OP, ...SP, ...DP |}>>;
-
-  // adding $Shape<P> everywhere makes error messages clearer
+  // simple case
   declare export function connect<-P, -S, SP: $Shape<P>>(
     mapStateToProps: MapStateToProps<S, $Diff<P, SP>, SP>,
+    mapDispatchToProps?: null,
+    mergeProps?: null,
   ): Connector<$Diff<P, SP>, React$ComponentType<P>>;
 
+  // map version
   declare export function connect<
     -P,
     -S,
@@ -75,6 +68,19 @@ declare module "react-redux" {
   >(
     mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
     mapDispatchToProps: DP,
+    mergeProps?: null,
+  ): Connector<$Diff<$Diff<P, SP>, DP>, React$ComponentType<P>>;
+
+  // function version
+  declare export function connect<
+    -P,
+    -S,
+    -A,
+    SP: $Shape<P>,
+    DP: $Shape<P> & { [string]: (any) => A },
+  >(
+    mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
+    mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<$Diff<P, SP>, DP>, DP>,
   ): Connector<$Diff<$Diff<P, SP>, DP>, React$ComponentType<P>>;
 
   // declare export function connect<S, D, OP, SP, DP, MP>(

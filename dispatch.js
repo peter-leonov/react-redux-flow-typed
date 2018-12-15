@@ -77,5 +77,17 @@ export const C = connect<Props, State, Action, _, _>(
 )(WC);
 
 <C own1="" />;
-// // $FlowFixMe missing own1 exists in Props
-// <C nonExisting="sdsd" />;
+
+const mapDispatchToPropsFn = dispatch => ({
+  action1: (...args) => dispatch(action1(...args)),
+  action2: (...args) => dispatch(action2(...args)),
+});
+
+export const Cfn = connect<Props, State, Action, _, _>(
+  mapStateToProps,
+  mapDispatchToPropsFn,
+)(WC);
+
+<Cfn own1="" />;
+// // missing own1 exists in Props
+// <Cfn nonExisting="sdsd" />;
