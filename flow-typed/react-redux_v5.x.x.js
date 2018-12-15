@@ -24,6 +24,16 @@
 */
 
 declare module "react-redux" {
+  declare export class Provider<Store> extends React$Component<{
+    store: Store,
+    children?: React$Node,
+  }> {}
+
+  declare export function createProvider<Store>(
+    storeKey?: string,
+    subKey?: string,
+  ): Class<Provider<Store>>;
+
   // A connected component wraps some component WC. Note that S (State) and D (Action)
   // are "phantom" type parameters, as they are not constrained by the definition but
   // rather by the context at the use site.
