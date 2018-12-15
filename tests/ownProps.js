@@ -37,6 +37,14 @@ type PropsNonStrict = {
 
 class WC extends Component<Props, {}> {}
 
+export const C7 = connect<Props, _>()(WC);
+export const c7 = <C7 own1="" />;
+
+class WC8 extends Component<PropsNonStrict, {}> {}
+
+export const C8 = connect<PropsNonStrict, _>()(WC8);
+export const c8 = <C8 own1="" />;
+
 export const C1 = connect<Props, Action, _>(
   null,
   null,
@@ -51,7 +59,7 @@ export const C2 = connect<Props, Action, _>(
   null,
   { pure: false },
 )(WC);
-export const c2 = <C1 own1="foo" />;
+export const c2 = <C2 own1="foo" />;
 
 const equalNoop = (next, prev) => {
   (next: {||});
@@ -76,10 +84,16 @@ export const C6 = connect<Props, Action, _>(
 )(WC);
 export const c6 = <C6 own1="foo" />;
 
-export const C7 = connect<Props, _>()(WC);
-export const c7 = <C7 own1="" />;
+declare function mergeProps(
+  stateProps: {||},
+  dispatchProps: {||},
+  ownProps: Props,
+): Props;
 
-class WC8 extends Component<PropsNonStrict, {}> {}
-
-export const C8 = connect<PropsNonStrict, _>()(WC8);
-export const c8 = <C8 own1="" />;
+export const C9 = connect<Props, Action, _>(
+  null,
+  null,
+  mergeProps,
+  null,
+)(WC);
+export const c9 = <C9 own1="foo" />;

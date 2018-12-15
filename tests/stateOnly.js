@@ -57,14 +57,14 @@ export const C2 = connect<Props, State, _>(
   mapStateToProps,
   null,
 )(WC);
-export const c2 = <C1 own1="foo" />;
+export const c2 = <C2 own1="foo" />;
 
 export const C3 = connect<Props, State, _>(
   mapStateToProps,
   null,
   null,
 )(WC);
-export const c3 = <C2 own1="foo" />;
+export const c3 = <C3 own1="foo" />;
 
 const areStatesEqual = (next: State, prev: State) => true;
 const areOwnPropsEqual = (next: OwnProps, prev: OwnProps) => true;
@@ -81,4 +81,17 @@ export const C4 = connect<Props, State, _>(
     areStatePropsEqual,
   },
 )(WC);
-export const c4 = <C3 own1="foo" />;
+export const c4 = <C4 own1="foo" />;
+
+declare function mergeProps(
+  stateProps: StateProps,
+  dispatchProps: {||},
+  ownProps: OwnProps,
+): Props;
+
+export const C5 = connect<Props, State, _>(
+  mapStateToProps,
+  null,
+  mergeProps,
+)(WC);
+export const c5 = <C5 own1="foo" />;
