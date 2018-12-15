@@ -28,22 +28,24 @@ const action2 = payload => ({ type: "ACTION2", payload });
 
 // component
 
-// type OwnProps = {|
-//   own1: Date,
-//   // [string]: mixed,
-// |};
-
-// type StateProps = {|
-//   state1: string,
-//   state2: number,
-// |};
-
-type Props = {|
+type OwnProps = {|
   own1: string,
+|};
+
+type StateProps = {|
   state1: string,
   state2: number,
+|};
+
+type DispatchProps = {|
   action1: typeof action1,
   action2: typeof action2,
+|};
+
+type Props = {|
+  ...OwnProps,
+  ...StateProps,
+  ...DispatchProps,
 |};
 
 class WC extends Component<Props, {}> {
@@ -118,11 +120,36 @@ export const C2 = connect<Props2, Action, _>(
   mapDispatchToProps,
 )(WC2);
 
-<C2 own1="" />;
+export const c2 = <C2 own1="" />;
 
 export const Cfn2 = connect<Props2, Action, _>(
   null,
   mapDispatchToPropsFn,
 )(WC2);
 
-<Cfn2 own1="" />;
+export const cfn2 = <Cfn2 own1="" />;
+
+export const C3 = connect<Props2, Action, _>(
+  null,
+  mapDispatchToProps,
+  null,
+)(WC2);
+
+export const c3 = <C3 own1="" />;
+
+const areStatesEqual = (next: State, prev: State) => true;
+const areOwnPropsEqual = (next: OwnProps, prev: OwnProps) => true;
+const areStatePropsEqual = (next: StateProps, prev: StateProps) => true;
+
+export const C4 = connect<Props, State, _, _, _>(
+  mapStateToProps,
+  mapDispatchToProps,
+  null,
+  {
+    pure: true,
+    areStatesEqual,
+    areOwnPropsEqual,
+    areStatePropsEqual,
+  },
+)(WC);
+export const c4 = <C3 own1="foo" />;

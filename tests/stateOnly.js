@@ -25,11 +25,19 @@ type Dispatch = Action => Action;
 
 // component
 
-type Props = {
+type OwnProps = {|
   own1: string,
+|};
+
+type StateProps = {|
   state1: string,
   state2: number,
-};
+|};
+
+type Props = {|
+  ...OwnProps,
+  ...StateProps,
+|};
 
 class WC extends Component<Props, {}> {}
 
@@ -43,7 +51,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export const C1 = connect<Props, State, _>(mapStateToProps)(WC);
-<C1 own1="" nonExisting="sdsd" />;
+<C1 own1="" />;
 
 export const C2 = connect<Props, State, _>(
   mapStateToProps,
@@ -58,9 +66,19 @@ export const C3 = connect<Props, State, _>(
 )(WC);
 export const c3 = <C2 own1="foo" />;
 
+const areStatesEqual = (next: State, prev: State) => true;
+const areOwnPropsEqual = (next: OwnProps, prev: OwnProps) => true;
+const areStatePropsEqual = (next: StateProps, prev: StateProps) => true;
+
 export const C4 = connect<Props, State, _>(
   mapStateToProps,
   null,
   null,
+  {
+    pure: true,
+    areStatesEqual,
+    areOwnPropsEqual,
+    areStatePropsEqual,
+  },
 )(WC);
 export const c4 = <C3 own1="foo" />;
