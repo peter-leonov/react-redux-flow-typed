@@ -94,6 +94,16 @@ declare module "react-redux" {
     mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<$Diff<P, SP>, DP>, DP>,
   ): Connector<$Diff<$Diff<P, SP>, DP>, React$ComponentType<P>>;
 
+  // dispatch only
+  declare export function connect<
+    -P,
+    -A,
+    DP: $Shape<P> & { [string]: (any) => A },
+  >(
+    mapStateToProps: null,
+    mapDispatchToProps: DP,
+  ): Connector<$Diff<P, DP>, React$ComponentType<P>>;
+
   // declare export function connect<S, D, OP, SP, DP, MP>(
   //   mapStateToProps: MapStateToProps<S, OP, DP>,
   //   mapDispatchToProps: MapDispatchToPropsFn<D, OP, SP>,

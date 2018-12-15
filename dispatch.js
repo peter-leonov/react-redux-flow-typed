@@ -77,6 +77,10 @@ export const C = connect<Props, State, Action, _, _>(
 )(WC);
 
 <C own1="" />;
+// // missing own1 exists in Props
+// <Cfn nonExisting="sdsd" />;
+
+// function version
 
 const mapDispatchToPropsFn = dispatch => ({
   action1: (...args) => dispatch(action1(...args)),
@@ -91,3 +95,34 @@ export const Cfn = connect<Props, State, Action, _, _>(
 <Cfn own1="" />;
 // // missing own1 exists in Props
 // <Cfn nonExisting="sdsd" />;
+
+// no state version
+
+type Props2 = {|
+  own1: string,
+  action1: typeof action1,
+  action2: typeof action2,
+|};
+
+class WC2 extends Component<Props2, {}> {
+  render() {
+    const { own1, action1, action2 } = this.props;
+    this.props.own1.toString();
+    this.props.action2(123).type;
+    return null;
+  }
+}
+
+const mapDispatchToProps2 = {
+  action1,
+  action2,
+  // // $FlowFixMe undefined property action3
+  // action3: 1,
+};
+
+export const C2 = connect<Props2, Action, _>(
+  null,
+  mapDispatchToProps2,
+)(WC2);
+
+<C2 own1="" />;
