@@ -145,10 +145,10 @@ declare module "react-redux" {
     children?: React$Node,
   }> {}
 
-  declare export function createProvider<Store>(
+  declare export function createProvider(
     storeKey?: string,
     subKey?: string,
-  ): Class<Provider<Store>>;
+  ): Class<Provider<*>>;
 
   // Typings for connectAdvanced()
   declare type ConnectAdvancedOptions = {
