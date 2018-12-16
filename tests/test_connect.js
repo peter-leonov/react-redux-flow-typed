@@ -383,8 +383,8 @@ function testMapDispatchToPropsPassesActionCreatorsWithMapStateToPropsAndMergePr
     dispatch1: () => {},
     dispatch2: () => {}
   };
-  const mergeProps = (stateProps, dispatchProps, ownProps: {forMergeProps: number}) => {
-    return Object.assign({}, stateProps, dispatchProps, { fromMergeProps: 123 });
+  const mergeProps = (stateProps, dispatchProps, ownProps: {forMergeProps: number, passthrough: number}) => {
+    return Object.assign({}, {passthrough: ownProps.passthrough}, stateProps, dispatchProps, { fromMergeProps: 123 });
   }
   const Connected = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Com);
   <Connected passthrough={123} forMapStateToProps="str" forMergeProps={1234}/>;
