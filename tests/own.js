@@ -25,13 +25,21 @@ type Dispatch = Action => Action;
 
 // component
 
-type Props = {|
+type OwnProps = {|
   own1: string,
+|};
+
+type Props = {|
+  ...OwnProps,
   dispatch: Dispatch,
 |};
 
+type PropsWithMergeProps = {|
+  ...OwnProps,
+|};
+
 type PropsNonStrict = {
-  own1: string,
+  ...OwnProps,
   dispatch: Dispatch,
 };
 
@@ -87,13 +95,15 @@ export const c6 = <C6 own1="foo" />;
 declare function mergeProps(
   stateProps: {||},
   dispatchProps: {||},
-  ownProps: Props,
-): Props;
+  ownProps: OwnProps,
+): PropsWithMergeProps;
 
-export const C9 = connect<Props, Action, _>(
+class WC9 extends Component<PropsWithMergeProps, {}> {}
+
+export const C9 = connect<PropsWithMergeProps, OwnProps, Action, _>(
   null,
   null,
   mergeProps,
   null,
-)(WC);
+)(WC9);
 export const c9 = <C9 own1="foo" />;

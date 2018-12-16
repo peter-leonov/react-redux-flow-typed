@@ -89,7 +89,7 @@ declare function mergeProps(
   ownProps: OwnProps,
 ): Props;
 
-export const C5 = connect<Props, State, _>(
+export const C5 = connect<Props, OwnProps, State, _>(
   mapStateToProps,
   null,
   mergeProps,
