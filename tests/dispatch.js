@@ -78,7 +78,7 @@ export const C = connect<Props, State, Action, _, _>(
   mapDispatchToProps,
 )(WC);
 
-<C own1="" />;
+export const c1 = <C own1="" />;
 // // missing own1 exists in Props
 // <Cfn nonExisting="sdsd" />;
 
@@ -94,7 +94,7 @@ export const Cfn = connect<Props, State, Action, _, _>(
   mapDispatchToPropsFn,
 )(WC);
 
-<Cfn own1="" />;
+export const cfn1 = <Cfn own1="" />;
 // // missing own1 exists in Props
 // <Cfn nonExisting="sdsd" />;
 
