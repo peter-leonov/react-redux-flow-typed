@@ -417,6 +417,8 @@ function testMergeProps() {
     }
   }
 
+  type Action = 'action'
+  type Dispatch = Action => Action
   type State = {a: number}
   type MapStateToPropsProps = {forMapStateToProps: string}
   const mapStateToProps = (state: State, props: MapStateToPropsProps) => {
@@ -425,8 +427,8 @@ function testMergeProps() {
     }
   }
   type MapDispatchToPropsProps = {forMapDispatchToProps: string}
-  const mapDispatchToProps = (dispatch, ownProps: MapDispatchToPropsProps) => {
-    return {fromMapDispatchToProps: ownProps.forMapDispatchToProps}
+  const mapDispatchToProps = (dispatch: Dispatch, ownProps: MapDispatchToPropsProps) => {
+    return {fromMapDispatchToProps: () => 'action'}
   }
   const mergeProps = (stateProps, dispatchProps, ownProps: {forMergeProps: number}) => {
     return {fromMergeProps: 123};
