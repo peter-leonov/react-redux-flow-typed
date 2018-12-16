@@ -222,6 +222,7 @@ function testMapStateToPropsDoesNotNeedProps() {
 }
 
 function testMapDispatchToProps() {
+  type Action = 'action';
   type Props = {
     passthrough: number,
     fromMapDispatchToProps: string,
@@ -244,7 +245,7 @@ function testMapDispatchToProps() {
       fromMapStateToProps: 'str' + state.a
     }
   }
-  type MapDispatchToPropsProps = {forMapDispatchToProps: string}
+  type MapDispatchToPropsProps = {forMapDispatchToProps: () => Action}
   const mapDispatchToProps = (dispatch: *, ownProps: MapDispatchToPropsProps) => {
     return {fromMapDispatchToProps: ownProps.forMapDispatchToProps}
   }
@@ -259,9 +260,10 @@ function testMapDispatchToProps() {
 }
 
 function testMapDispatchToPropsWithoutMapStateToProps() {
+  type Action = 'action'
   type Props = {
     passthrough: number,
-    fromMapDispatchToProps: string
+    fromMapDispatchToProps: () => Action
   };
   class Com extends React.Component<Props> {
     render() {
@@ -272,7 +274,7 @@ function testMapDispatchToPropsWithoutMapStateToProps() {
     }
   }
 
-  type MapDispatchToPropsProps = {forMapDispatchToProps: string};
+  type MapDispatchToPropsProps = {forMapDispatchToProps: () => Action};
   const mapDispatchToProps = (dispatch: *, ownProps: MapDispatchToPropsProps) => {
     return {fromMapDispatchToProps: ownProps.forMapDispatchToProps}
   }
