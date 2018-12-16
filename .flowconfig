@@ -10,3 +10,5 @@ all=error
 [options]
 all=true
 module.use_strict=true
+suppress_comment=\\(.\\|\n\\)*\\$FlowFixMe
+suppress_comment=\\(.\\|\n\\)*\\$ExpectError
