@@ -79,12 +79,18 @@ declare module "react-redux" {
 
   // State only.
 
-  declare export function connect<-P, -S, SP: $Shape<P>>(
-    mapStateToProps: MapStateToProps<S, $Diff<P, SP>, SP>,
+  declare type Connector2<OP, MP> = <WC: React$ComponentType<MP>>(
+    WC,
+  ) => Class<React$Component<OP>> & WC;
+
+  declare type MergePropsEx<P, MP: P> = P;
+
+  declare export function connect<-P, -OP, -S, SP>(
+    mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
-    options?: ?Options<S, $Diff<P, SP>, SP, P>,
-  ): Connector<$Diff<P, SP>, React$ComponentType<P>>;
+    options?: ?Options<S, OP, SP, P>,
+  ): Connector2<OP, MergePropsEx<P, {| ...OP, ...SP |}>>;
 
   // State and dispatch.
 
