@@ -71,9 +71,9 @@ declare module "react-redux" {
   // Own Props only.
 
   declare export function connect<-P, -A>(
-    mapStateToProps?: null,
-    mapDispatchToProps?: null,
-    mergeProps?: null,
+    mapStateToProps?: null | void,
+    mapDispatchToProps?: null | void,
+    mergeProps?: null | void,
     options?: ?Options<{||}, P, {||}, P>,
   ): Connector<$Diff<P, { dispatch: Dispatch<A> }>, React$ComponentType<P>>;
 
@@ -81,8 +81,8 @@ declare module "react-redux" {
 
   declare export function connect<-P, -S, SP: $Shape<P>>(
     mapStateToProps: MapStateToProps<S, $Diff<P, SP>, SP>,
-    mapDispatchToProps?: null,
-    mergeProps?: null,
+    mapDispatchToProps?: null | void,
+    mergeProps?: null | void,
     options?: ?Options<S, $Diff<P, SP>, SP, P>,
   ): Connector<$Diff<P, SP>, React$ComponentType<P>>;
 
@@ -98,7 +98,7 @@ declare module "react-redux" {
   >(
     mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
     mapDispatchToProps: DP,
-    mergeProps?: null,
+    mergeProps?: null | void,
     options?: ?Options<S, $Diff<$Diff<P, SP>, DP>, SP, P>,
   ): Connector<$Diff<$Diff<P, SP>, DP>, React$ComponentType<P>>;
 
@@ -112,7 +112,7 @@ declare module "react-redux" {
   >(
     mapStateToProps: MapStateToProps<S, $Diff<$Diff<P, SP>, DP>, SP>,
     mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<$Diff<P, SP>, DP>, DP>,
-    mergeProps?: null,
+    mergeProps?: null | void,
     options?: ?Options<S, $Diff<$Diff<P, SP>, DP>, SP, P>,
   ): Connector<$Diff<$Diff<P, SP>, DP>, React$ComponentType<P>>;
 
@@ -124,9 +124,9 @@ declare module "react-redux" {
     -A,
     DP: $Shape<P> & { [string]: (...Array<any>) => A },
   >(
-    mapStateToProps: null,
+    mapStateToProps: null | void,
     mapDispatchToProps: DP,
-    mergeProps?: null,
+    mergeProps?: null | void,
     options?: ?Options<{||}, $Diff<P, DP>, {||}, P>,
   ): Connector<$Diff<P, DP>, React$ComponentType<P>>;
 
@@ -136,9 +136,9 @@ declare module "react-redux" {
     -A,
     DP: $Shape<P> & { [string]: (...Array<any>) => A },
   >(
-    mapStateToProps: null,
+    mapStateToProps: null | void,
     mapDispatchToProps: MapDispatchToPropsFn<A, $Diff<P, DP>, DP>,
-    mergeProps?: null,
+    mergeProps?: null | void,
     options?: ?Options<{||}, $Diff<P, DP>, {||}, P>,
   ): Connector<$Diff<P, DP>, React$ComponentType<P>>;
 
@@ -155,8 +155,8 @@ declare module "react-redux" {
   // Own Props only.
 
   declare export function connect<-P, -OP: {}, -A: {}>(
-    mapStateToProps?: null,
-    mapDispatchToProps?: null,
+    mapStateToProps?: null | void,
+    mapDispatchToProps?: null | void,
     mergeProps: MergeProps<P, OP, {||}, {||}>,
     options?: ?Options<{||}, P, {||}, P>,
   ): Connector<P, React$ComponentType<P>>;
@@ -165,7 +165,7 @@ declare module "react-redux" {
 
   declare export function connect<-P: {}, -OP: {}, -S, SP: {}>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
-    mapDispatchToProps?: null,
+    mapDispatchToProps?: null | void,
     mergeProps: MergeProps<P, OP, SP, {||}>,
     options?: ?Options<S, OP, SP, P>,
   ): Connector<OP, React$ComponentType<P>>;
@@ -211,7 +211,7 @@ declare module "react-redux" {
     -A,
     DP: $Shape<P> & { [string]: (...Array<any>) => A },
   >(
-    mapStateToProps: null,
+    mapStateToProps: null | void,
     mapDispatchToProps: DP,
     mergeProps: MergeProps<P, OP, {||}, DP>,
     options?: ?Options<{||}, OP, {||}, P>,
@@ -224,7 +224,7 @@ declare module "react-redux" {
     -A,
     DP: $Shape<P> & { [string]: (...Array<any>) => A },
   >(
-    mapStateToProps: null,
+    mapStateToProps: null | void,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP>,
     mergeProps: MergeProps<P, OP, {||}, DP>,
     options?: ?Options<{||}, OP, {||}, P>,
