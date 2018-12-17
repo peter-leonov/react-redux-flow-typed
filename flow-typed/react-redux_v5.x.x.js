@@ -85,12 +85,12 @@ declare module "react-redux" {
 
   declare type MergePropsEx<P, MP: P> = P;
 
-  declare export function connect<-P, -OP, -S, SP>(
+  declare export function connect<-OP, -S, SP>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
-    options?: ?Options<S, OP, SP, P>,
-  ): Connector2<OP, MergePropsEx<P, {| ...OP, ...SP |}>>;
+    options?: ?Options<S, OP, SP, {| ...OP, ...SP |}>,
+  ): Connector2<OP, {| ...OP, ...SP |}>;
 
   // State and dispatch.
 
