@@ -53,7 +53,7 @@ function doesNotRequireDefinedComponentToTypeCheck1case() {
     stringProp: false,
   });
 
-  connect(mapStateToProps)(Component);
+  connect<{||}, _, _>(mapStateToProps)(Component);
 }
 
 function doesNotRequireDefinedComponentToTypeCheck2case() {
@@ -173,7 +173,8 @@ function testExactProps() {
 }
 
 function testWithStatelessFunctionalComponent() {
-  type Props = {passthrough: number, fromStateToProps: string};
+  type OwnProps = {|passthrough: number, forMapStateToProps: string|}
+  type Props = {...OwnProps, fromStateToProps: string};
   const Com = (props: Props) => <div>{props.passthrough} {props.fromStateToProps}</div>
 
   type State = {a: number};
@@ -186,7 +187,7 @@ function testWithStatelessFunctionalComponent() {
     }
   };
 
-  const Connected = connect(mapStateToProps)(Com);
+  const Connected = connect<OwnProps, _, _>(mapStateToProps)(Com);
   <Connected passthrough={123} forMapStateToProps={'data'}/>;
   //$ExpectError wrong type for passthrough
   <Connected passthrough={''} forMapStateToProps={'data'}/>;
@@ -201,7 +202,8 @@ function testWithStatelessFunctionalComponent() {
 }
 
 function testMapStateToPropsDoesNotNeedProps() {
-  type Props = {passthrough: number, fromStateToProps: string};
+  type OwnProps = {|passthrough: number|}
+  type Props = {...OwnProps, fromStateToProps: string};
   class Com extends React.Component<Props> {
     render() {
       return <div>{this.props.passthrough}</div>;
@@ -215,7 +217,7 @@ function testMapStateToPropsDoesNotNeedProps() {
     }
   }
 
-  const Connected = connect(mapStateToProps)(Com);
+  const Connected = connect<OwnProps, _, _>(mapStateToProps)(Com);
   <Connected passthrough={123}/>;
   //$ExpectError component property passthrough not found
   <Connected />;

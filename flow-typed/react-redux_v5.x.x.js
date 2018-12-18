@@ -83,8 +83,6 @@ declare module "react-redux" {
     WC,
   ) => Class<React$Component<OP>> & WC;
 
-  declare type MergePropsEx<P, MP: P> = P;
-
   declare export function connect<-OP, -S, SP>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps?: null | void,
