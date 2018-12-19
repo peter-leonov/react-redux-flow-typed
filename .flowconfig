@@ -5,7 +5,7 @@
 flow-typed
 
 [lints]
-all=error
+#all=error
 
 [options]
 all=true
