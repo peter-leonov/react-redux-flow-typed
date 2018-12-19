@@ -1,3 +1,7 @@
+## Expectations
+
+OwnProps has to be of an exact type.
+
 ## Placeholders
 
 The rule of thumb is: if something gets fishy, then just provide more concrete types instead of `_`. Split the big `Props` in `OwnProps`, `StateProps` and `DispatchProps` and provide to the `connect()` function.
