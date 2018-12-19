@@ -45,15 +45,15 @@ type PropsNonStrict = {
 
 class WC extends Component<Props, {}> {}
 
-export const C7 = connect<Props, _>()(WC);
+export const C7 = connect<Props, OwnProps, _, _, _, _>()(WC);
 export const c7 = <C7 own1="" />;
 
 class WC8 extends Component<PropsNonStrict, {}> {}
 
-export const C8 = connect<PropsNonStrict, _>()(WC8);
+export const C8 = connect<PropsNonStrict, OwnProps, _, _, _, _>()(WC8);
 export const c8 = <C8 own1="" />;
 
-export const C1 = connect<Props, Action, _>(
+export const C1 = connect<Props, OwnProps, _, _, _, _>(
   null,
   null,
   null,
@@ -61,7 +61,7 @@ export const C1 = connect<Props, Action, _>(
 )(WC);
 export const c1 = <C1 own1="foo" />;
 
-export const C2 = connect<Props, Action, _>(
+export const C2 = connect<Props, OwnProps, _, _, _, _>(
   null,
   null,
   null,
@@ -69,22 +69,18 @@ export const C2 = connect<Props, Action, _>(
 )(WC);
 export const c2 = <C2 own1="foo" />;
 
-const equalNoop = (next, prev) => {
-  (next: {||});
-  (prev: {||});
+const equalNoop = (next: {||}, prev: {||}) => {
   return true;
 };
 
-export const C6 = connect<Props, Action, _>(
+export const C6 = connect<Props, OwnProps, _, _, _, _>(
   null,
   null,
   null,
   {
     pure: true,
     areStatesEqual: equalNoop,
-    areOwnPropsEqual: (next, prev) => {
-      (next: Props);
-      (prev: Props);
+    areOwnPropsEqual: (next: OwnProps, prev: OwnProps) => {
       return true;
     },
     areStatePropsEqual: equalNoop,
@@ -100,7 +96,7 @@ declare function mergeProps(
 
 class WC9 extends Component<PropsWithMergeProps, {}> {}
 
-export const C9 = connect<PropsWithMergeProps, OwnProps, Action, _>(
+export const C9 = connect<PropsWithMergeProps, OwnProps, _, _, _, _>(
   null,
   null,
   mergeProps,

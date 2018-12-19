@@ -42,24 +42,24 @@ type Props = {|
 class WC extends Component<Props, {}> {}
 
 const mapStateToProps = (state, ownProps) => {
-  // // $FlowFixMe state1 is missing in Props
-  // ownProps.state1;
+  // $FlowFixMe state1 is missing in Props
+  ownProps.state1;
   return {
     state1: getState1(state).concat(ownProps.own1),
     state2: getState2(state),
   };
 };
 
-export const C1 = connect<Props, State, _>(mapStateToProps)(WC);
+export const C1 = connect<Props, OwnProps, _, _, _, _>(mapStateToProps)(WC);
 <C1 own1="" />;
 
-export const C2 = connect<Props, State, _>(
+export const C2 = connect<Props, OwnProps, _, _, _, _>(
   mapStateToProps,
   null,
 )(WC);
 export const c2 = <C2 own1="foo" />;
 
-export const C3 = connect<Props, State, _>(
+export const C3 = connect<Props, OwnProps, _, _, _, _>(
   mapStateToProps,
   null,
   null,
@@ -70,7 +70,7 @@ const areStatesEqual = (next: State, prev: State) => true;
 const areOwnPropsEqual = (next: OwnProps, prev: OwnProps) => true;
 const areStatePropsEqual = (next: StateProps, prev: StateProps) => true;
 
-export const C4 = connect<Props, State, _>(
+export const C4 = connect<Props, OwnProps, _, _, _, _>(
   mapStateToProps,
   null,
   null,
@@ -89,7 +89,7 @@ declare function mergeProps(
   ownProps: OwnProps,
 ): Props;
 
-export const C5 = connect<Props, OwnProps, State, _>(
+export const C5 = connect<Props, OwnProps, _, _, _, _>(
   mapStateToProps,
   null,
   mergeProps,

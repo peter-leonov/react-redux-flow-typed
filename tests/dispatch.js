@@ -50,16 +50,13 @@ type Props = {|
 
 class WC extends Component<Props, {}> {
   render() {
-    const { own1, state1, state2, ...rest } = this.props;
-    this.props.own1.toString();
-    // this.props.action2().a();
     return null;
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
   // // $FlowFixMe state1 is missing in Props
-  // ownProps.state1;
+  ownProps.state1;
   return {
     state1: getState1(state).concat(ownProps.own1),
     state2: getState2(state),
@@ -69,11 +66,9 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = {
   action1,
   action2,
-  // // $FlowFixMe undefined property action3
-  // action3: 1,
 };
 
-export const C = connect<Props, State, Action, _, _>(
+export const C = connect<Props, OwnProps, _, _, _, _>(
   mapStateToProps,
   mapDispatchToProps,
 )(WC);
@@ -84,12 +79,12 @@ export const c1 = <C own1="" />;
 
 // function version
 
-const mapDispatchToPropsFn = dispatch => ({
+const mapDispatchToPropsFn = (dispatch: *) => ({
   action1: (...args) => dispatch(action1(...args)),
   action2: (...args) => dispatch(action2(...args)),
 });
 
-export const Cfn = connect<Props, State, Action, _, _>(
+export const Cfn = connect<Props, OwnProps, _, _, _, _>(
   mapStateToProps,
   mapDispatchToPropsFn,
 )(WC);
@@ -115,21 +110,21 @@ class WC2 extends Component<Props2, {}> {
   }
 }
 
-export const C2 = connect<Props2, Action, _>(
+export const C2 = connect<Props2, OwnProps, _, _, _, _>(
   null,
   mapDispatchToProps,
 )(WC2);
 
 export const c2 = <C2 own1="" />;
 
-export const Cfn2 = connect<Props2, Action, _>(
+export const Cfn2 = connect<Props2, OwnProps, _, _, _, _>(
   null,
   mapDispatchToPropsFn,
 )(WC2);
 
 export const cfn2 = <Cfn2 own1="" />;
 
-export const C3 = connect<Props2, Action, _>(
+export const C3 = connect<Props2, OwnProps, _, _, _, _>(
   null,
   mapDispatchToProps,
   null,
@@ -141,7 +136,7 @@ const areStatesEqual = (next: State, prev: State) => true;
 const areOwnPropsEqual = (next: OwnProps, prev: OwnProps) => true;
 const areStatePropsEqual = (next: StateProps, prev: StateProps) => true;
 
-export const C4 = connect<Props, State, _, _, _>(
+export const C4 = connect<Props, OwnProps, _, _, _, _>(
   mapStateToProps,
   mapDispatchToProps,
   null,
