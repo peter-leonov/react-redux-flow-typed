@@ -72,37 +72,30 @@ declare module "react-redux" {
     WC,
   ) => Class<React$Component<OP>> & WC;
 
-  declare type ExtendProps<P, MP: P> = MP;
+  declare type ExtendProps<P, MP: P> = P;
 
-  declare export function connect<
-    -P: {},
-    -OP: {},
-    -SP: {||},
-    -DP: {||},
-    -S,
-    -A,
-  >(
+  declare export function connect<-P, -OP, -SP: {||}, -DP: {||}, -S, -A>(
     mapStateToProps?: null | void,
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
-    options?: ?Options<S, OP, {||}, P>,
+    options?: ?Options<S, OP, {||}, { ...OP, dispatch: Dispatch<A> }>,
   ): Connector2<OP, ExtendProps<P, { ...OP, dispatch: Dispatch<A> }>>;
 
-  declare export function connect<-P: {}, -OP: {}, -SP: {}, -DP: {||}, -S, -A>(
+  declare export function connect<-P, -OP, -SP, -DP: {||}, -S, -A>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
     options?: ?Options<S, OP, SP, { ...OP, ...SP }>,
   ): Connector2<OP, ExtendProps<P, { ...OP, ...SP }>>;
 
-  declare export function connect<-P: {}, -OP: {}, -SP: {||}, -DP: {}, S, A>(
-    mapStateToProps: null,
+  declare export function connect<-P, -OP, -SP, -DP, S, A>(
+    mapStateToProps: null | void,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps?: null | void,
     options?: ?Options<S, OP, {||}, { ...OP, ...DP }>,
   ): Connector2<OP, ExtendProps<P, { ...OP, ...DP }>>;
 
-  declare export function connect<-P: {}, -OP: {}, -SP: {}, -DP: {}, S, A>(
+  declare export function connect<-P, -OP, -SP, -DP, S, A>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps?: null | void,
@@ -113,27 +106,27 @@ declare module "react-redux" {
   // Harder case with the super powered `mergeProps` argument
   // ------------------------------------------------------------
 
-  declare type MergeProps<+P, -OP: {}, -SP: {}, -DP: {}> = (
+  declare type MergeProps<+P, -OP, -SP, -DP> = (
     stateProps: SP,
     dispatchProps: DP,
     ownProps: OP,
   ) => P;
 
-  declare export function connect<-P: {}, -OP: {}, -S, -A, SP: {}, DP: {||}>(
+  declare export function connect<-P, -OP, -S, -A, SP, DP: {||}>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps: null | void,
     mergeProps: MergeProps<P, OP, SP, DP>,
     options?: ?Options<S, OP, SP, P>,
   ): Connector2<OP, P>;
 
-  declare export function connect<-P: {}, -OP: {}, -S, -A, SP: {||}, DP: {}>(
+  declare export function connect<-P, -OP, -S, -A, SP: {||}, DP>(
     mapStateToProps: null | void,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps: MergeProps<P, OP, SP, DP>,
     options?: ?Options<S, OP, SP, P>,
   ): Connector2<OP, P>;
 
-  declare export function connect<-P: {}, -OP: {}, -S, -A, SP: {}, DP: {}>(
+  declare export function connect<-P, -OP, -S, -A, SP, DP>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps: MergeProps<P, OP, SP, DP>,
