@@ -3,7 +3,12 @@ import React from "react";
 import { connect } from "react-redux";
 
 function testPassingPropsToConnectedComponent() {
-  type Props = {passthrough: number, passthroughWithDefaultProp: number, fromStateToProps: string};
+  type OwnProps = {
+    passthrough: number,
+    passthroughWithDefaultProp?: number,
+    forMapStateToProps: string
+  }
+  type Props = {passthrough: number, passthroughWithDefaultProp?: number, fromStateToProps: string};
   class Com extends React.Component<Props> {
     static defaultProps = { passthroughWithDefaultProp: 123 };
     render() {
@@ -21,7 +26,7 @@ function testPassingPropsToConnectedComponent() {
     }
   };
 
-  const Connected = connect(mapStateToProps)(Com);
+  const Connected = connect<Props, OwnProps,_,_,_,_>(mapStateToProps)(Com);
   <Connected passthrough={123} forMapStateToProps={'data'} passthroughWithDefaultProp={123}/>;
   // OK without passthroughWithDefaultProp
   <Connected passthrough={123} forMapStateToProps={'data'}/>;
@@ -49,11 +54,10 @@ function doesNotRequireDefinedComponentToTypeCheck1case() {
   };
 
   const mapStateToProps = (state: {}) => ({
-    // $ExpectError wrong type for stringProp
     stringProp: false,
   });
 
-  connect<{||}, _, _>(mapStateToProps)(Component);
+  connect<Props,_,_,_,_,_>(mapStateToProps)(Component);
 }
 
 function doesNotRequireDefinedComponentToTypeCheck2case() {
@@ -70,7 +74,7 @@ function doesNotRequireDefinedComponentToTypeCheck2case() {
     numProp: false,
   });
 
-  connect(null, mapDispatchToProps)(Component);
+  connect<Props, {||}, _,_,_,_>(null, mapDispatchToProps)(Component);
 }
 
 function doesNotRequireDefinedComponentToTypeCheck3case() {
@@ -93,7 +97,7 @@ function doesNotRequireDefinedComponentToTypeCheck3case() {
     numProp: false,
   });
 
-  connect(mapStateToProps, mapDispatchToProps)(Component);
+  connect<Props, {||}, _, _, _, _>(mapStateToProps, mapDispatchToProps)(Component);
 }
 
 function doesNotRequireDefinedComponentToTypeCheck4case() {
@@ -110,7 +114,7 @@ function doesNotRequireDefinedComponentToTypeCheck4case() {
     stringProp: false,
   });
 
-  connect(mapStateToProps, {})(Component);
+  connect<Props, {||}, _, _, _, _>(mapStateToProps, {})(Component);
 }
 
 function doesNotRequireDefinedComponentToTypeCheck5case() {
@@ -134,11 +138,15 @@ function doesNotRequireDefinedComponentToTypeCheck5case() {
 }
 
 function testExactProps() {
-  type Props = {|
+  type OwnProps = {|
+    forMapStateToProps: string,
+    passthrough: number,
+  |};
+  type Props = {
     forMapStateToProps: string,
     passthrough: number,
     fromStateToProps: string
-  |};
+  };
 
   class Com extends React.Component<Props> {
     render() {
@@ -158,7 +166,7 @@ function testExactProps() {
     }
   };
 
-  const Connected = connect(mapStateToProps)(Com);
+  const Connected = connect<Props, OwnProps, _,_,_,_>(mapStateToProps)(Com);
   <Connected passthrough={123} forMapStateToProps={'data'} />;
   //$ExpectError extra prop what exact props does not allow
   <Connected passthrough={123} forMapStateToProps={321} extraProp={123}/>;
@@ -187,7 +195,7 @@ function testWithStatelessFunctionalComponent() {
     }
   };
 
-  const Connected = connect<OwnProps, _, _>(mapStateToProps)(Com);
+  const Connected = connect<Props, OwnProps, _,_,_,_>(mapStateToProps)(Com);
   <Connected passthrough={123} forMapStateToProps={'data'}/>;
   //$ExpectError wrong type for passthrough
   <Connected passthrough={''} forMapStateToProps={'data'}/>;
@@ -217,7 +225,7 @@ function testMapStateToPropsDoesNotNeedProps() {
     }
   }
 
-  const Connected = connect<OwnProps, _, _>(mapStateToProps)(Com);
+  const Connected = connect<Props, OwnProps, _,_,_,_>(mapStateToProps)(Com);
   <Connected passthrough={123}/>;
   //$ExpectError component property passthrough not found
   <Connected />;
@@ -225,8 +233,13 @@ function testMapStateToPropsDoesNotNeedProps() {
 
 function testMapDispatchToProps() {
   type Action = 'action';
-  type Props = {
+  type OwnProps = {|
+    forMapStateToProps: string,
+    forMapDispatchToProps: string,
     passthrough: number,
+  |};
+  type Props = {
+    ...OwnProps,
     fromMapDispatchToProps: string,
     fromMapStateToProps: string
   };
@@ -247,12 +260,12 @@ function testMapDispatchToProps() {
       fromMapStateToProps: 'str' + state.a
     }
   }
-  type MapDispatchToPropsProps = {forMapDispatchToProps: () => Action}
-  const mapDispatchToProps = (dispatch, ownProps: MapDispatchToPropsProps) => {
+  type MapDispatchToPropsProps = {forMapDispatchToProps: string}
+  const mapDispatchToProps = (dispatch: Action => mixed, ownProps: MapDispatchToPropsProps) => {
     return {fromMapDispatchToProps: ownProps.forMapDispatchToProps}
   }
-  const Connected = connect(mapStateToProps, mapDispatchToProps)(Com);
-  <Connected passthrough={123} forMapStateToProps={'data'} forMapDispatchToProps={'more data'} />;
+  const Connected = connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(Com);
+  <Connected passthrough={123} forMapStateToProps={'data'} forMapDispatchToProps={'action'} />;
   //$ExpectError passthrough missing
   <Connected forMapStateToProps={'data'} forMapDispatchToProps={'more data'} />;
   //$ExpectError forMapStateToProps missing
@@ -263,6 +276,10 @@ function testMapDispatchToProps() {
 
 function testMapDispatchToPropsWithoutMapStateToProps() {
   type Action = 'action'
+  type OwnProps = {
+    passthrough: number,
+    forMapDispatchToProps: string,
+  }
   type Props = {
     passthrough: number,
     fromMapDispatchToProps: () => Action
@@ -276,11 +293,11 @@ function testMapDispatchToPropsWithoutMapStateToProps() {
     }
   }
 
-  type MapDispatchToPropsProps = {forMapDispatchToProps: () => Action};
-  const mapDispatchToProps = (dispatch, ownProps: MapDispatchToPropsProps) => {
+  type MapDispatchToPropsProps = {forMapDispatchToProps: string};
+  const mapDispatchToProps = (dispatch: Action => mixed, ownProps: MapDispatchToPropsProps) => {
     return {fromMapDispatchToProps: ownProps.forMapDispatchToProps}
   }
-  const Connected = connect(null, mapDispatchToProps)(Com);
+  const Connected = connect<Props, OwnProps, _,_,_,_>(null, mapDispatchToProps)(Com);
   <Connected passthrough={123} forMapStateToProps={'data'} forMapDispatchToProps={'more data'} />;
   //$ExpectError passthrough missing
   <Connected forMapStateToProps={'data'} forMapDispatchToProps={'more data'} />;
@@ -289,6 +306,9 @@ function testMapDispatchToPropsWithoutMapStateToProps() {
 }
 
 function testMapDispatchToPropsPassesActionCreators() {
+  type OwnProps = {
+    passthrough: number,
+  };
   type Props = {
     passthrough: number,
     dispatch1: (num: number) => void,
@@ -304,7 +324,7 @@ function testMapDispatchToPropsPassesActionCreators() {
     dispatch1: (num: number) => {},
     dispatch2: () => {}
   };
-  const Connected = connect(null, mapDispatchToProps)(Com);
+  const Connected = connect<Props, OwnProps, _,_,_,_>(null, mapDispatchToProps)(Com);
   <Connected passthrough={123}/>;
   //$ExpectError no passthrough
   <Connected/>;
@@ -326,8 +346,12 @@ function testMapDispatchToPropsPassesActionCreators() {
 }
 
 function testMapDispatchToPropsPassesActionCreatorsWithMapStateToProps() {
-  type Props = {
+  type OwnProps = {|
     passthrough: number,
+    forMapStateToProps: string,
+  |};
+  type Props = {
+    ...OwnProps,
     dispatch1: () => void,
     dispatch2: () => void,
     fromMapStateToProps: number
@@ -348,7 +372,7 @@ function testMapDispatchToPropsPassesActionCreatorsWithMapStateToProps() {
     dispatch1: () => {},
     dispatch2: () => {}
   };
-  const Connected = connect(mapStateToProps, mapDispatchToProps)(Com);
+  const Connected = connect<Props, OwnProps, _, _, _, _>(mapStateToProps, mapDispatchToProps)(Com);
   <Connected passthrough={123} forMapStateToProps="str"/>;
   //$ExpectError no passthrough
   <Connected/>;
@@ -465,7 +489,12 @@ function testOptions() {
 }
 
 function testHoistConnectedComponent() {
-  type Props = {passthrough: number, passthroughWithDefaultProp: number, fromStateToProps: string};
+  type OwnProps = {
+    passthrough: number,
+    passthroughWithDefaultProp?: number,
+    forMapStateToProps: string
+    };
+  type Props = {...OwnProps, fromStateToProps: string};
   class Com extends React.Component<Props> {
     static defaultProps = { passthroughWithDefaultProp: 123 };
     static myStatic = 1;
@@ -485,7 +514,7 @@ function testHoistConnectedComponent() {
     }
   };
 
-  const Connected = connect(mapStateToProps)(Com);
+  const Connected = connect<Props, OwnProps,_,_,_,_>(mapStateToProps)(Com);
   // OK without passthroughWithDefaultProp
   <Connected passthrough={123} forMapStateToProps={'data'}/>;
   // OK with passthroughWithDefaultProp
