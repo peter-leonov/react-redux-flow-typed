@@ -78,29 +78,29 @@ declare module "react-redux" {
     mapStateToProps?: null | void,
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
-    options?: ?Options<S, OP, {||}, { ...OP, dispatch: Dispatch<A> }>,
-  ): Connector2<OP, ExtendProps<P, { ...OP, dispatch: Dispatch<A> }>>;
+    options?: ?Options<S, OP, {||}, {| ...OP, dispatch: Dispatch<A> |}>,
+  ): Connector2<OP, ExtendProps<P, {| ...OP, dispatch: Dispatch<A> |}>>;
 
   declare export function connect<-P, -OP, -SP, -DP: {||}, -S, -A>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
-    options?: ?Options<S, OP, SP, { ...OP, ...SP }>,
-  ): Connector2<OP, ExtendProps<P, { ...OP, ...SP }>>;
+    options?: ?Options<S, OP, SP, {| ...OP, ...SP |}>,
+  ): Connector2<OP, ExtendProps<P, {| ...OP, ...SP |}>>;
 
   declare export function connect<-P, -OP, -SP, -DP, S, A>(
     mapStateToProps: null | void,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps?: null | void,
-    options?: ?Options<S, OP, {||}, { ...OP, ...DP }>,
-  ): Connector2<OP, ExtendProps<P, { ...OP, ...DP }>>;
+    options?: ?Options<S, OP, {||}, {| ...OP, ...DP |}>,
+  ): Connector2<OP, ExtendProps<P, {| ...OP, ...DP |}>>;
 
   declare export function connect<-P, -OP, -SP, -DP, S, A>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps?: null | void,
-    options?: ?Options<S, OP, SP, { ...OP, ...SP, ...DP }>,
-  ): Connector2<OP, ExtendProps<P, { ...OP, ...SP, ...DP }>>;
+    options?: ?Options<S, OP, SP, {| ...OP, ...SP, ...DP |}>,
+  ): Connector2<OP, ExtendProps<P, {| ...OP, ...SP, ...DP |}>>;
 
   // ------------------------------------------------------------
   // Harder case with the super powered `mergeProps` argument
