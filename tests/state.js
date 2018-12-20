@@ -41,7 +41,7 @@ type Props = {|
 
 class WC extends Component<Props, {}> {}
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state, ownProps): StateProps => {
   // $FlowFixMe state1 is missing in Props
   ownProps.state1;
   return {
@@ -65,6 +65,16 @@ export const C3 = connect<Props, OwnProps, _, _, _, _>(
   null,
 )(WC);
 export const c3 = <C3 own1="foo" />;
+
+type Factory = (State, OwnProps) => (State, OwnProps) => StateProps;
+const mapStateToPropsFactory: Factory = (a, b) => mapStateToProps;
+
+export const C3f = connect<Props, OwnProps, StateProps, _, _, _>(
+  mapStateToPropsFactory,
+  null,
+  null,
+)(WC);
+export const c3f = <C3f own1="foo" />;
 
 const areStatesEqual = (next: State, prev: State) => true;
 const areOwnPropsEqual = (next: OwnProps, prev: OwnProps) => true;

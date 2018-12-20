@@ -41,11 +41,26 @@ declare module "react-redux" {
 
   declare type Dispatch<A> = (action: A) => A;
 
-  declare type MapStateToProps<-S, -OP, +SP> = (state: S, ownProps: OP) => SP;
-  declare type MapDispatchToPropsFn<A, -OP, +DP> = (
-    dispatch: Dispatch<A>,
-    ownProps: OP,
-  ) => DP;
+  declare type MapStateToProps<-S, -OP, +SP> =
+    | ((state: S, ownProps: OP) => SP)
+    // If you want to use the factory function but get a strange error
+    // like "function is not an object" then just type the factiry function
+    // like this:
+    // const factory: (State, OwnProps) => (State, OwnProps) => StateProps
+    // and provide the StateProps type to the SP type parameter.
+    | ((state: S, ownProps: OP) => (state: S, ownProps: OP) => SP);
+
+  declare type MapDispatchToPropsFn<A, -OP, +DP> =
+    | ((dispatch: Dispatch<A>, ownProps: OP) => DP)
+    // If you want to use the factory function but get a strange error
+    // like "function is not an object" then just type the factiry function
+    // like this:
+    // const factory: (Dispatch, OwnProps) => (Dispatch, OwnProps) => DispatchProps
+    // and provide the DispatchProps type to the DP type parameter.
+    | ((
+        dispatch: Dispatch<A>,
+        ownProps: OP,
+      ) => (dispatch: Dispatch<A>, ownProps: OP) => DP);
 
   declare type Connector<OP, MP> = <WC: React$ComponentType<MP>>(
     WC,
@@ -55,7 +70,7 @@ declare module "react-redux" {
 
   declare type ExtendProps<P, MP: P> = P;
 
-  declare export function connect<-P, -OP, -SP: {||}, -DP: {||}, -S, -A>(
+  declare export function connect<-P, -OP, -SP, -DP, -S, -A>(
     mapStateToProps?: null | void,
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
@@ -64,7 +79,8 @@ declare module "react-redux" {
     // Just make your OP parameter an exact object.
   ): Connector<OP, ExtendProps<P, {| ...OP, dispatch: Dispatch<A> |}>>;
 
-  declare export function connect<-P, -OP, -SP, -DP: {||}, -S, -A>(
+  declare export function connect<-P, -OP, -SP, -DP, -S, -A>(
+    // If you get error here try adding return type to you mapStateToProps function
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
@@ -83,6 +99,7 @@ declare module "react-redux" {
   ): Connector<OP, ExtendProps<P, {| ...OP, ...DP |}>>;
 
   declare export function connect<-P, -OP, -SP, -DP, S, A>(
+    // If you get error here try adding return type to you mapStateToProps function
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps?: null | void,
@@ -99,21 +116,23 @@ declare module "react-redux" {
     ownProps: OP,
   ) => P;
 
-  declare export function connect<-P, -OP, -S, -A, SP: {||}, DP: {||}>(
+  declare export function connect<-P, -OP, -S, -A, SP, DP>(
     mapStateToProps: null | void,
     mapDispatchToProps: null | void,
+    // If you get error here try adding return type to you mapStateToProps function
     mergeProps: MergeProps<P, OP, SP, DP>,
     options?: ?Options<S, OP, SP, P>,
   ): Connector<OP, P>;
 
-  declare export function connect<-P, -OP, -S, -A, SP, DP: {||}>(
+  declare export function connect<-P, -OP, -S, -A, SP, DP>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps: null | void,
+    // If you get error here try adding return type to you mapStateToProps function
     mergeProps: MergeProps<P, OP, SP, DP>,
     options?: ?Options<S, OP, SP, P>,
   ): Connector<OP, P>;
 
-  declare export function connect<-P, -OP, -S, -A, SP: {||}, DP>(
+  declare export function connect<-P, -OP, -S, -A, SP, DP>(
     mapStateToProps: null | void,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps: MergeProps<P, OP, SP, DP>,

@@ -21,7 +21,7 @@ type Action2 = {|
 |};
 type Action = Action1 | Action2;
 
-// type Dispatch = Action => Action;
+type Dispatch = Action => Action;
 
 const action1 = (payload, x) => ({ type: "ACTION1", payload: payload + x });
 const action2 = payload => ({ type: "ACTION2", payload });
@@ -79,7 +79,7 @@ export const c1 = <C own1="" />;
 
 // function version
 
-const mapDispatchToPropsFn = (dispatch: *) => ({
+const mapDispatchToPropsFn = (dispatch: Dispatch) => ({
   action1: (...args) => dispatch(action1(...args)),
   action2: (...args) => dispatch(action2(...args)),
 });
@@ -129,8 +129,17 @@ export const C3 = connect<Props2, OwnProps, _, _, _, _>(
   mapDispatchToProps,
   null,
 )(WC2);
-
 export const c3 = <C3 own1="" />;
+
+type Factory = (Dispatch, OwnProps) => (Dispatch, OwnProps) => DispatchProps;
+const mapDispatchToPropsFactory: Factory = (a, b) => mapDispatchToPropsFn;
+
+export const C3f = connect<Props2, OwnProps, _, DispatchProps, _, _>(
+  null,
+  mapDispatchToPropsFactory,
+  null,
+)(WC2);
+export const c3f = <C3f own1="" />;
 
 const areStatesEqual = (next: State, prev: State) => true;
 const areOwnPropsEqual = (next: OwnProps, prev: OwnProps) => true;
