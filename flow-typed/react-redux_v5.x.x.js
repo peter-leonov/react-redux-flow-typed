@@ -2,9 +2,6 @@
 // https://medium.com/@samgoldman/ville-saukkonen-thanks-and-thanks-for-your-thoughtful-questions-24aedcfed518
 // https://github.com/facebook/flow/issues/7125
 
-// react-redux merges props as in:
-// Object.assign({}, ownProps, stateProps, dispatchProps)
-
 /*
   WC = Component being wrapped
   S = State
@@ -13,7 +10,6 @@
   SP = StateProps
   DP = DispatchProps
   MP = Merge props
-  MDP = Map dispatch to props object
   RSP = Returned state props
   RDP = Returned dispatch props
   RMP = Returned merge props
@@ -28,20 +24,16 @@ declare module "react-redux" {
   // Typings for connect()
   // ------------------------------------------------------------
 
-  declare type Equal<T> = (next: T, prev: T) => boolean;
   declare export type Options<S, OP, SP, MP> = {|
     pure?: boolean,
     withRef?: boolean,
-    areStatesEqual?: Equal<S>,
-    areOwnPropsEqual?: Equal<OP>,
-    areStatePropsEqual?: Equal<SP>,
-    areMergedPropsEqual?: Equal<MP>,
+    areStatesEqual?: (next: S, prev: S) => boolean,
+    areOwnPropsEqual?: (next: OP, prev: OP) => boolean,
+    areStatePropsEqual?: (next: SP, prev: SP) => boolean,
+    areMergedPropsEqual?: (next: MP, prev: MP) => boolean,
     storeKey?: string,
   |};
 
-  // A connected component wraps some component WC. Note that S (State) and D (Action)
-  // are "phantom" type parameters, as they are not constrained by the definition but
-  // rather by the context at the use site.
   declare class ConnectedComponent<OP, +WC> extends React$Component<OP> {
     static +WrappedComponent: WC;
     getWrappedInstance(): React$ElementRef<WC>;
@@ -55,22 +47,11 @@ declare module "react-redux" {
     ownProps: OP,
   ) => DP;
 
-  // The connector function actaully perfoms the wrapping,
-  // returning a connected component.
-  declare type Connector<OP, C> = <WC: C>(
+  declare type Connector<OP, MP> = <WC: React$ComponentType<MP>>(
     WC,
   ) => Class<React$Component<OP>> & WC;
 
-  // Putting it all together.
-  // Adding $Shape<P> everywhere makes error messages clearer.
-
-  // ------------------------------------------------------------
-  // Simple case without the super powered `mergeProps` argument
-  // ------------------------------------------------------------
-
-  declare type Connector2<OP, MP> = <WC: React$ComponentType<MP>>(
-    WC,
-  ) => Class<React$Component<OP>> & WC;
+  // No `mergeProps` argument
 
   declare type ExtendProps<P, MP: P> = P;
 
@@ -79,32 +60,30 @@ declare module "react-redux" {
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
     options?: ?Options<S, OP, {||}, {| ...OP, dispatch: Dispatch<A> |}>,
-  ): Connector2<OP, ExtendProps<P, {| ...OP, dispatch: Dispatch<A> |}>>;
+  ): Connector<OP, ExtendProps<P, {| ...OP, dispatch: Dispatch<A> |}>>;
 
   declare export function connect<-P, -OP, -SP, -DP: {||}, -S, -A>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
     options?: ?Options<S, OP, SP, {| ...OP, ...SP |}>,
-  ): Connector2<OP, ExtendProps<P, {| ...OP, ...SP |}>>;
+  ): Connector<OP, ExtendProps<P, {| ...OP, ...SP |}>>;
 
   declare export function connect<-P, -OP, -SP, -DP, S, A>(
     mapStateToProps: null | void,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps?: null | void,
     options?: ?Options<S, OP, {||}, {| ...OP, ...DP |}>,
-  ): Connector2<OP, ExtendProps<P, {| ...OP, ...DP |}>>;
+  ): Connector<OP, ExtendProps<P, {| ...OP, ...DP |}>>;
 
   declare export function connect<-P, -OP, -SP, -DP, S, A>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps?: null | void,
     options?: ?Options<S, OP, SP, {| ...OP, ...SP, ...DP |}>,
-  ): Connector2<OP, ExtendProps<P, {| ...OP, ...SP, ...DP |}>>;
+  ): Connector<OP, ExtendProps<P, {| ...OP, ...SP, ...DP |}>>;
 
-  // ------------------------------------------------------------
-  // Harder case with the super powered `mergeProps` argument
-  // ------------------------------------------------------------
+  // With `mergeProps` argument
 
   declare type MergeProps<+P, -OP, -SP, -DP> = (
     stateProps: SP,
@@ -117,28 +96,28 @@ declare module "react-redux" {
     mapDispatchToProps: null | void,
     mergeProps: MergeProps<P, OP, SP, DP>,
     options?: ?Options<S, OP, SP, P>,
-  ): Connector2<OP, P>;
+  ): Connector<OP, P>;
 
   declare export function connect<-P, -OP, -S, -A, SP, DP: {||}>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps: null | void,
     mergeProps: MergeProps<P, OP, SP, DP>,
     options?: ?Options<S, OP, SP, P>,
-  ): Connector2<OP, P>;
+  ): Connector<OP, P>;
 
   declare export function connect<-P, -OP, -S, -A, SP: {||}, DP>(
     mapStateToProps: null | void,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps: MergeProps<P, OP, SP, DP>,
     options?: ?Options<S, OP, SP, P>,
-  ): Connector2<OP, P>;
+  ): Connector<OP, P>;
 
   declare export function connect<-P, -OP, -S, -A, SP, DP>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps: MergeProps<P, OP, SP, DP>,
     options?: ?Options<S, OP, SP, P>,
-  ): Connector2<OP, P>;
+  ): Connector<OP, P>;
 
   // ------------------------------------------------------------
   // Typings for Provider
