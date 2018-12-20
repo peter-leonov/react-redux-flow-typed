@@ -60,6 +60,8 @@ declare module "react-redux" {
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
     options?: ?Options<S, OP, {||}, {| ...OP, dispatch: Dispatch<A> |}>,
+    // Got error like inexact OwnProps is incompatible with exact object type?
+    // Just make your OP parameter an exact object.
   ): Connector<OP, ExtendProps<P, {| ...OP, dispatch: Dispatch<A> |}>>;
 
   declare export function connect<-P, -OP, -SP, -DP: {||}, -S, -A>(
@@ -67,6 +69,8 @@ declare module "react-redux" {
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
     options?: ?Options<S, OP, SP, {| ...OP, ...SP |}>,
+    // Got error like inexact OwnProps is incompatible with exact object type?
+    // Just make your OP parameter an exact object.
   ): Connector<OP, ExtendProps<P, {| ...OP, ...SP |}>>;
 
   declare export function connect<-P, -OP, -SP, -DP, S, A>(
@@ -74,6 +78,8 @@ declare module "react-redux" {
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps?: null | void,
     options?: ?Options<S, OP, {||}, {| ...OP, ...DP |}>,
+    // Got error like inexact OwnProps is incompatible with exact object type?
+    // Just make your OP parameter an exact object.
   ): Connector<OP, ExtendProps<P, {| ...OP, ...DP |}>>;
 
   declare export function connect<-P, -OP, -SP, -DP, S, A>(
@@ -81,6 +87,8 @@ declare module "react-redux" {
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps?: null | void,
     options?: ?Options<S, OP, SP, {| ...OP, ...SP, ...DP |}>,
+    // Got error like inexact OwnProps is incompatible with exact object type?
+    // Just make your OP parameter an exact object.
   ): Connector<OP, ExtendProps<P, {| ...OP, ...SP, ...DP |}>>;
 
   // With `mergeProps` argument
