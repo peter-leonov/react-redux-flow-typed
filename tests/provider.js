@@ -7,7 +7,7 @@ const storeN: StoreN = [1, 2, 3];
 type StoreS = Array<string>;
 const storeS: StoreS = ["a", "b", "c"];
 
-export const MyProvider = createProvider();
+export const MyProvider = createProvider("ikea");
 
 export const x1 = <Provider store={storeN} />;
 export const x2 = <Provider store={storeS} />;
