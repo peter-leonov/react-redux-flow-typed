@@ -103,3 +103,24 @@ export const C9 = connect<PropsWithMergeProps, OwnProps, _, _, _, _>(
   null,
 )(WC9);
 export const c9 = <C9 own1="foo" />;
+
+type OwnProps10 = {|
+  defaulted: number,
+|};
+type Props10 = {
+  ...OwnProps10,
+};
+class WC10 extends Component<Props10> {
+  static defaultProps = { defaulted: 1 };
+  render() {
+    this.props.defaulted.toFixed();
+    return null;
+  }
+}
+export const C10 = connect<Props10, OwnProps10, _, _, _, _>()(WC10);
+
+C10.WrappedComponent;
+<C10 x={1} />;
+<C10 defaulted={7} />;
+//$ExpectError
+<C10 defaulted={"7"} />;
