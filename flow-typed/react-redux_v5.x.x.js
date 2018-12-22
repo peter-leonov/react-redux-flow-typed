@@ -66,7 +66,7 @@ declare module "react-redux" {
         ownProps: OP,
       ) => (dispatch: Dispatch<A>, ownProps: OP) => DP);
 
-  declare class ConnectedComponent<P, +WC> extends React$Component<P> {
+  declare class ConnectedComponent<OP, +WC> extends React$Component<OP> {
     static +WrappedComponent: WC;
     getWrappedInstance(): React$ElementRef<WC>;
   }
