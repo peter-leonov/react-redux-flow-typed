@@ -24,22 +24,22 @@ C10.WrappedComponent;
 <C10 x="foo" defaulted="foo" />;
 
 type OwnProps = {|
-  defaultBooleanProp?: boolean,
+  defaultBooleanProp: boolean,
 |};
 type StateProps = {|
   stringProp: string,
 |};
-type Props = {
+type Props = {|
   ...OwnProps,
   ...StateProps,
-};
+|};
 class WC extends Component<Props> {
   static defaultProps = {
     defaultBooleanProp: false,
   };
   render() {
     const { defaultBooleanProp, stringProp } = this.props;
-    return !!defaultBooleanProp && stringProp;
+    return defaultBooleanProp && stringProp;
   }
 }
 
@@ -52,6 +52,8 @@ export const C11 = connect<Props, OwnProps, StateProps, empty, empty, empty>(
 )(WC);
 
 C11;
+
+//$ExpectError does not work with StateProps :(
 <C11 />;
 <C11 defaultBooleanProp={true} />;
 //$ExpectError
