@@ -45,7 +45,7 @@ function testPassingPropsToConnectedComponent() {
   //$ExpectError forMapStateToProps missing
   <Connected passthrough={123}/>;
   //$ExpectError takes in only React components
-  const Connected2 = connect(mapStateToProps)('');
+  const Connected2 = connect<Props, OwnProps, _,_,_,_>(mapStateToProps)('');
   e.push(Connected2);
 }
 
@@ -193,7 +193,7 @@ function testExactProps() {
   //$ExpectError forMapStateToProps missing
   <Connected passthrough={123}/>;
   //$ExpectError takes in only React components
-  const Connected2 = connect(mapStateToProps)('');
+  const Connected2 = connect<Props, OwnProps, _,_,_,_>(mapStateToProps)('');
   e.push(Connected2);
 }
 
@@ -411,7 +411,7 @@ function testMapDispatchToPropsPassesActionCreatorsWithMapStateToProps() {
   e.push(Connected);
   <Connected passthrough={123} forMapStateToProps="str"/>;
   //$ExpectError no passthrough
-  <Connected/>;
+  <Connected forMapStateToProps="str" />;
 
   const mapDispatchToProps2 = {
     dispatch1: () => {}
@@ -460,15 +460,15 @@ function testMapDispatchToPropsPassesActionCreatorsWithMapStateToPropsAndMergePr
   }
   const Connected = connect<Props, OwnProps1, _,_,_,_>(mapStateToProps, mapDispatchToProps, mergeProps)(Com);
   e.push(Connected);
-  <Connected passthrough={123} forMapStateToProps="str" forMergeProps={1234}/>;
+  <Connected passthrough={123} forMapStateToProps="str" forMergeProps={1234} />;
   //$ExpectError no passthrough
-  <Connected/>;
+  <Connected forMapStateToProps="str" forMergeProps={1234} />;
   //$ExpectError forMapStateToProps missing
-  <Connected forMapDispatchToProps={'more data'} forMergeProps={1234} />;
+  <Connected forMergeProps={1234} />;
   //$ExpectError forMergeProps is missing
   <Connected forMapStateToProps={'data'} />;
   //$ExpectError forMergeProps is wrong type
-  <Connected forMapStateToProps={'data'} forMapDispatchToProps={'more data'} forMergeProps={'not number'} />;
+  <Connected forMapStateToProps={'data'} forMergeProps={'not number'} />;
 
   const mapDispatchToProps2 = {
     dispatch1: () => {}
@@ -559,7 +559,7 @@ function testNoDispatch() {
       return <div></div>;
     }
   }
-  // $ExpectError property `dispatch` is missing in  `Props`
+  // $ExpectError property `dispatch` is missing in `Props`
   e.push(connect<Props, {||}, _,_,_,_>()(Com));
 }
 
