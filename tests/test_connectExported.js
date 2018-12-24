@@ -365,9 +365,9 @@ function testMapDispatchToPropsPassesActionCreators() {
   const mapDispatchToPropsWithoutDispatch2 = {
     dispatch1: (num: number) => {}
   };
+  //$ExpectError no dispatch2
   const Connected2 = connect<Props, OwnProps, _,_,_,_>(null, mapDispatchToPropsWithoutDispatch2)(Com);
   e.push(Connected2);
-  //$ExpectError no dispatch2
   <Connected2 passthrough={123}/>;
 
   const mapDispatchToPropsWithWrongDispatch1 = {
@@ -416,9 +416,9 @@ function testMapDispatchToPropsPassesActionCreatorsWithMapStateToProps() {
   const mapDispatchToProps2 = {
     dispatch1: () => {}
   };
+  //$ExpectError no dispatch2
   const Connected2 = connect<Props, OwnProps, _,_,_,_>(mapStateToProps, mapDispatchToProps2)(Com);
   e.push(Connected2);
-  //$ExpectError no dispatch2
   <Connected2 passthrough={123} forMapStateToProps="str"/>;
 }
 
@@ -473,9 +473,9 @@ function testMapDispatchToPropsPassesActionCreatorsWithMapStateToPropsAndMergePr
   const mapDispatchToProps2 = {
     dispatch1: () => {}
   };
+  //$ExpectError no dispatch2
   const Connected2 = connect<Props, OwnProps2, _,_,_,_>(mapStateToProps, mapDispatchToProps2)(Com);
   e.push(Connected2);
-  //$ExpectError no dispatch2
   <Connected2 passthrough={123} forMapStateToProps="str"/>;
 }
 
@@ -543,7 +543,7 @@ function testOptions() {
 
 function testDispatch() {
   type Props = {
-    dispatch: mixed
+    dispatch: empty => empty
   }
   class Com extends React.Component<Props> {
     render() {
