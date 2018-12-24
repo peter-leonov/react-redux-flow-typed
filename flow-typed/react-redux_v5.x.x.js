@@ -86,7 +86,7 @@ declare module "react-redux" {
   ): Connector<P, OP, {| ...OP, dispatch: Dispatch<A> |}>;
 
   declare export function connect<-P, -OP, -SP, -DP, -S, -A>(
-    // If you get error here try adding return type to you mapStateToProps function
+    // If you get error here try adding return type to your mapStateToProps function
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps?: null | void,
     mergeProps?: null | void,
@@ -105,7 +105,7 @@ declare module "react-redux" {
   ): Connector<P, OP, {| ...OP, ...DP |}>;
 
   declare export function connect<-P, -OP, -SP, -DP, S, A>(
-    // If you get error here try adding return type to you mapStateToProps function
+    // If you get error here try adding return type to your mapStateToProps function
     mapStateToProps: MapStateToProps<S, OP, SP>,
     mapDispatchToProps: MapDispatchToPropsFn<A, OP, DP> | DP,
     mergeProps?: null | void,
