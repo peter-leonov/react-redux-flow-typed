@@ -601,3 +601,70 @@ function testHoistConnectedComponent() {
   // OK with declared static property
   Connected.myStatic;
 }
+
+function testState() {
+  type Props = {};
+  class Com extends React.Component<Props> {}
+
+  type State = {|
+    a: number
+  |};
+  const mapStateToProps = (state: State) => {
+    return {}
+  };
+  type OtherState = {|
+    b: number
+  |};
+
+  //$ExpectError property `b` is missing in `State` but exists in `OtherState`
+  const Connected = connect<Props, {||}, _,_,OtherState,empty>(mapStateToProps)(Com);
+  e.push(Connected);
+  <Connected />;
+}
+
+function testActionFn() {
+  type Props = {};
+  class Com extends React.Component<Props> {}
+
+  type Dispatch<A> = A => A;
+  type Action = {|
+    type: 'action'
+  |};
+  const dispatch1 = () => ({ type: 'action' })
+  const mapDispatchToProps = (dispatch: Dispatch<Action>) => {
+    dispatch1: () => dispatch(dispatch1())
+  };
+
+  type OtherAction = {|
+    type: 'otherAction'
+  |};
+
+  // The error message below is wrong (bug in Flow?),
+  // but it goes away if the right action type (Action) gets provided.
+  //$ExpectError function [1] is not an object
+  const Connected = connect<Props, {||}, _,_,_,OtherAction>(null, mapDispatchToProps)(Com);
+  e.push(Connected);
+  <Connected />;
+}
+
+function testAction() {
+  type Props = {};
+  class Com extends React.Component<Props> {}
+
+  type Action = {|
+    type: 'action'
+  |};
+  const dispatch1 = () => ({ type: 'action' })
+  const mapDispatchToProps = {
+    dispatch1
+  };
+
+  type OtherAction = {|
+    type: 'otherAction'
+  |};
+
+  //$ExpectError ???
+  const Connected = connect<Props, {||}, _,_,_,OtherAction>(null, mapDispatchToProps)(Com);
+  e.push(Connected);
+  <Connected />;
+}
