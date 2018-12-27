@@ -622,49 +622,66 @@ function testState() {
   <Connected />;
 }
 
-function testActionFn() {
-  type Props = {};
-  class Com extends React.Component<Props> {}
-
-  type Dispatch<A> = A => A;
-  type Action = {|
-    type: 'action'
+function testDispatch() {
+  type Action1 = {|
+    type: string
   |};
-  const dispatch1 = () => ({ type: 'action' })
-  const mapDispatchToProps = (dispatch: Dispatch<Action>) => {
-    dispatch1: () => dispatch(dispatch1())
+  type Dispatch1 = Action1 => Action1;
+  const action1 = (): Action1 => ({ type: 'str' })
+  const mapDispatchToProps = {
+    action1
   };
 
-  type OtherAction = {|
-    type: 'otherAction'
+  type Action2 = {|
+  //$ExpectError `string` is incompatible with `number` in property `type`
+    type: number
   |};
+  type Dispatch2 = Action2 => Action2;
 
-  // The error message below is wrong (bug in Flow?),
-  // but it goes away if the right action type (Action) gets provided.
-  //$ExpectError function [1] is not an object
-  const Connected = connect<Props, {||}, _,_,_,OtherAction>(null, mapDispatchToProps)(Com);
-  e.push(Connected);
-  <Connected />;
+  type Props = {
+    action1: typeof action1,
+  };
+  class Com extends React.Component<Props> {}
+
+  const Connected1 = connect<Props, {||}, _,_,_,Dispatch1>(null, mapDispatchToProps)(Com);
+  e.push(Connected1);
+  <Connected1 />;
+
+  const Connected2 = connect<Props, {||}, _,_,_,Dispatch2>(null, mapDispatchToProps)(Com);
+  e.push(Connected2);
+  <Connected2 />;
 }
 
-function testAction() {
-  type Props = {};
+function testDispatchFn() {
+  type Action1 = {|
+    type: string
+  |};
+  type Dispatch1 = Action1 => Action1;
+  const action1 = (): Action1 => ({ type: 'str' });
+  type DispatchProps = {|
+    action1: () => Action1
+  |};
+  type MapDispathToPropsFn = Dispatch1 => DispatchProps;
+  const mapDispatchToProps: MapDispathToPropsFn = (dispatch: Dispatch1) => ({
+    action1: (...args) => dispatch(action1(...args))
+  });
+
+  type Action2 = {|
+  //$ExpectError `string` is incompatible with `number` in property `type`
+    type: number
+  |};
+  type Dispatch2 = Action2 => Action2;
+
+  type Props = {
+    action1: typeof action1,
+  };
   class Com extends React.Component<Props> {}
 
-  type Action = {|
-    type: 'action'
-  |};
-  const dispatch1 = () => ({ type: 'action' })
-  const mapDispatchToProps = {
-    dispatch1
-  };
+  const Connected1 = connect<Props, {||}, _,DispatchProps,_,Dispatch1>(null, mapDispatchToProps)(Com);
+  e.push(Connected1);
+  <Connected1 />;
 
-  type OtherAction = {|
-    type: 'otherAction'
-  |};
-
-  //$ExpectError ???
-  const Connected = connect<Props, {||}, _,_,_,OtherAction>(null, mapDispatchToProps)(Com);
-  e.push(Connected);
-  <Connected />;
+  const Connected2 = connect<Props, {||}, _,DispatchProps,_,Dispatch2>(null, mapDispatchToProps)(Com);
+  e.push(Connected2);
+  <Connected2 />;
 }

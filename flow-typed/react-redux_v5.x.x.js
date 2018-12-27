@@ -52,6 +52,8 @@ declare module "react-redux" {
     // and provide the StateProps type to the SP type parameter.
     | ((state: S, ownProps: OP) => (state: S, ownProps: OP) => SP);
 
+  declare type Bind<D> = <A, R>((...A) => R) => (...A) => $Call<D, R>;
+
   declare type MapDispatchToPropsFn<D, -OP, +DP> =
     | ((dispatch: D, ownProps: OP) => DP)
     // If you want to use the factory function but get a strange error
@@ -90,14 +92,28 @@ declare module "react-redux" {
     // Just make your OP parameter an exact object.
   ): Connector<P, OP, {| ...OP, ...SP |}>;
 
+  // In this case DP is an object of functions which has been bound to dispatch
+  // by the given mapDispatchToProps function.
   declare export function connect<-P, -OP, -SP, -DP, S, D>(
     mapStateToProps: null | void,
-    mapDispatchToProps: MapDispatchToPropsFn<D, OP, DP> | DP,
+    mapDispatchToProps: MapDispatchToPropsFn<D, OP, DP>,
     mergeProps?: null | void,
     options?: ?Options<S, OP, {||}, {| ...OP, ...DP |}>,
     // Got error like inexact OwnProps is incompatible with exact object type?
     // Just make your OP parameter an exact object.
   ): Connector<P, OP, {| ...OP, ...DP |}>;
+
+  // In this case DP is an object of action creators not yet bound to dispatch,
+  // this difference is not important in the vanila redux,
+  // but in case of usage with redux-thunk, the return type may differ.
+  declare export function connect<-P, -OP, -SP, -DP, S, D>(
+    mapStateToProps: null | void,
+    mapDispatchToProps: DP,
+    mergeProps?: null | void,
+    options?: ?Options<S, OP, {||}, {| ...OP, ...DP |}>,
+    // Got error like inexact OwnProps is incompatible with exact object type?
+    // Just make your OP parameter an exact object.
+  ): Connector<P, OP, {| ...OP, ...$ObjMap<DP, Bind<D>> |}>;
 
   declare export function connect<-P, -OP, -SP, -DP, S, D>(
     // If you get error here try adding return type to your mapStateToProps function
@@ -133,17 +149,41 @@ declare module "react-redux" {
     options?: ?Options<S, OP, SP, P>,
   ): Connector<P, OP, P>;
 
+  // In this case DP is an object of functions which has been bound to dispatch
+  // by the given mapDispatchToProps function.
   declare export function connect<-P, -OP, -S, -D, SP, DP>(
     mapStateToProps: null | void,
-    mapDispatchToProps: MapDispatchToPropsFn<D, OP, DP> | DP,
+    mapDispatchToProps: MapDispatchToPropsFn<D, OP, DP>,
     mergeProps: MergeProps<P, OP, SP, DP>,
     options?: ?Options<S, OP, SP, P>,
   ): Connector<P, OP, P>;
 
+  // In this case DP is an object of action creators not yet bound to dispatch,
+  // this difference is not important in the vanila redux,
+  // but in case of usage with redux-thunk, the return type may differ.
+  declare export function connect<-P, -OP, -S, -D, SP, DP>(
+    mapStateToProps: null | void,
+    mapDispatchToProps: DP,
+    mergeProps: MergeProps<P, OP, SP, $ObjMap<DP, Bind<D>>>,
+    options?: ?Options<S, OP, SP, P>,
+  ): Connector<P, OP, P>;
+
+  // In this case DP is an object of functions which has been bound to dispatch
+  // by the given mapDispatchToProps function.
   declare export function connect<-P, -OP, -S, -D, SP, DP>(
     mapStateToProps: MapStateToProps<S, OP, SP>,
-    mapDispatchToProps: MapDispatchToPropsFn<D, OP, DP> | DP,
+    mapDispatchToProps: MapDispatchToPropsFn<D, OP, DP>,
     mergeProps: MergeProps<P, OP, SP, DP>,
+    options?: ?Options<S, OP, SP, P>,
+  ): Connector<P, OP, P>;
+
+  // In this case DP is an object of action creators not yet bound to dispatch,
+  // this difference is not important in the vanila redux,
+  // but in case of usage with redux-thunk, the return type may differ.
+  declare export function connect<-P, -OP, -S, -D, SP, DP>(
+    mapStateToProps: MapStateToProps<S, OP, SP>,
+    mapDispatchToProps: DP,
+    mergeProps: MergeProps<P, OP, SP, $ObjMap<DP, Bind<D>>>,
     options?: ?Options<S, OP, SP, P>,
   ): Connector<P, OP, P>;
 
