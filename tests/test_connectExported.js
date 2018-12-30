@@ -1270,3 +1270,101 @@ function testMergeProps_StateAndDispatchPropsFunction_wrongDispatch() {
   e.push(Connected);
   <Connected passthrough="foo" />;
 }
+
+function testMergeProps_returnsTotallyDifferentProps() {
+  type State = {|
+    +state1: 'state1'
+  |}
+  opaque type Action = 'action1';
+  type Dispatch = Action => Action;
+  const action1 = (): Action => 'action1'
+
+  type OwnProps = {|
+    passthrough: string
+  |}
+  type StateProps = {|
+    state1: 'state1'
+  |}
+  type DispatchProps = {|
+    action1: typeof action1
+  |}
+  type Props = {
+    a: 1,
+    b: 2,
+    c: 3
+  };
+  class Com extends React.Component<Props> {}
+
+  const mapStateToProps = state => ({
+    state1: state.state1
+  })
+
+  const mapDispatchToPropsFn = dispatch => ({
+    action1: () => dispatch(action1())
+  })
+
+  const mergeProps = (stateProps: StateProps, dispatchProps: DispatchProps, ownProps: OwnProps) => {
+    return {
+      a: 1,
+      b: 2,
+      c: 3,
+    }
+  }
+
+  const Connected = connect<Props, OwnProps, _,_,_,Dispatch>(
+    mapStateToProps,
+    mapDispatchToPropsFn,
+    mergeProps
+  )(Com);
+  e.push(Connected);
+  <Connected passthrough="foo" />;
+}
+
+function testMergeProps_returnsTotallyDifferentPropsWithError() {
+  type State = {|
+    +state1: 'state1'
+  |}
+  opaque type Action = 'action1';
+  type Dispatch = Action => Action;
+  const action1 = (): Action => 'action1'
+
+  type OwnProps = {|
+    passthrough: string
+  |}
+  type StateProps = {|
+    state1: 'state1'
+  |}
+  type DispatchProps = {|
+    action1: typeof action1
+  |}
+  type Props = {
+    a: 1,
+    b: 2,
+    c: 3
+  };
+  class Com extends React.Component<Props> {}
+
+  const mapStateToProps = state => ({
+    state1: state.state1
+  })
+
+  const mapDispatchToPropsFn = dispatch => ({
+    action1: () => dispatch(action1())
+  })
+
+  const mergeProps = (stateProps: StateProps, dispatchProps: DispatchProps, ownProps: OwnProps) => {
+    //$ExpectError property `c` is missing in object literal [1] but exists in  `Props` [2]
+    return {
+      a: 1,
+      b: 2,
+    }
+  }
+
+  const Connected = connect<Props, OwnProps, _,_,_,Dispatch>(
+    mapStateToProps,
+    mapDispatchToPropsFn,
+    mergeProps
+  )(Com);
+  e.push(Connected);
+  <Connected passthrough="foo" />;
+}
