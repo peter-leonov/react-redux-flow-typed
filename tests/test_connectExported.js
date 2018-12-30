@@ -1117,4 +1117,156 @@ function testMergeProps_OnlyDispatchPropsFunction_wrongDispatchProp() {
   <Connected passthrough="foo" />;
 }
 
-// add test for mergeProps getting empty objects instead of empty type
+function testMergeProps_StateAndDispatchPropsFunction_ok() {
+  type State = {|
+    +state1: 'state1'
+  |}
+  opaque type Action = 'action1';
+  type Dispatch = Action => Action;
+  const action1 = (): Action => 'action1'
+
+  type OwnProps = {|
+    passthrough: string
+  |}
+  type StateProps = {|
+    state1: 'state1'
+  |}
+  type DispatchProps = {|
+    action1: typeof action1
+  |}
+  type Props = {
+    ...OwnProps,
+    ...StateProps,
+    ...DispatchProps,
+  };
+  class Com extends React.Component<Props> {}
+
+  const mapStateToProps = state => ({
+    state1: state.state1
+  })
+
+  const mapDispatchToPropsFn = dispatch => ({
+    action1: () => dispatch(action1())
+  })
+
+  const mergeProps = (stateProps: StateProps, dispatchProps: DispatchProps, ownProps: OwnProps) => {
+    return {
+      ...ownProps,
+      ...stateProps,
+      ...dispatchProps,
+    }
+  }
+
+  const Connected = connect<Props, OwnProps, _,_,_,Dispatch>(
+    mapStateToProps,
+    mapDispatchToPropsFn,
+    mergeProps
+  )(Com);
+  e.push(Connected);
+  <Connected passthrough="foo" />;
+}
+
+function testMergeProps_StateAndDispatchPropsFunction_wrongState() {
+  type State = {|
+    +state1: 'state1'
+  |}
+  opaque type Action = 'action1';
+  type Dispatch = Action => Action;
+  const action1 = (): Action => 'action1'
+
+  type OwnProps = {|
+    passthrough: string
+  |}
+  type StateProps = {|
+    state1: 'state1'
+  |}
+  type DispatchProps = {|
+    action1: typeof action1
+  |}
+  type Props = {
+    ...OwnProps,
+    ...StateProps,
+    ...DispatchProps,
+  };
+  class Com extends React.Component<Props> {}
+
+  const mapStateToProps = state => ({
+    state1: state.state1
+  })
+
+  const mapDispatchToPropsFn = dispatch => ({
+    action1: () => dispatch(action1())
+  })
+
+  const mergeProps = (
+    // yes, a bit cryptic
+    //$ExpectError property `state1` is missing in  object type [1] but exists in  object literal [2]
+    stateProps: {|wrong:boolean|},
+    dispatchProps: DispatchProps,
+    ownProps: OwnProps
+  ) => {
+    return {
+      ...ownProps,
+      state1: 'state1',
+      ...dispatchProps,
+    }
+  }
+
+  const Connected = connect<Props, OwnProps, _,_,_,Dispatch>(
+    mapStateToProps,
+    mapDispatchToPropsFn,
+    mergeProps
+  )(Com);
+  e.push(Connected);
+  <Connected passthrough="foo" />;
+}
+
+function testMergeProps_StateAndDispatchPropsFunction_wrongDispatch() {
+  type State = {|
+    +state1: 'state1'
+  |}
+  opaque type Action = 'action1';
+  type Dispatch = Action => Action;
+  const action1 = (): Action => 'action1'
+
+  type OwnProps = {|
+    passthrough: string
+  |}
+  type StateProps = {|
+    state1: 'state1'
+  |}
+  type DispatchProps = {|
+    action1: typeof action1
+  |}
+  type Props = {
+    ...OwnProps,
+    ...StateProps,
+    ...DispatchProps,
+  };
+  class Com extends React.Component<Props> {}
+
+  const mapStateToProps = state => ({
+    state1: state.state1
+  })
+
+  const mapDispatchToPropsFn = dispatch => ({
+    //$ExpectError number [1] is incompatible with string literal `action1` [2]
+    action1: () => 123
+  })
+
+  const mergeProps = (stateProps: StateProps, dispatchProps: DispatchProps, ownProps: OwnProps) => {
+    return {
+      ...ownProps,
+      ...stateProps,
+      ...dispatchProps,
+    }
+  }
+
+  const Connected = connect<Props, OwnProps, _,_,_,Dispatch>(
+    mapStateToProps,
+    mapDispatchToPropsFn,
+    mergeProps
+  )(Com);
+  e.push(Connected);
+  <Connected passthrough="foo" />;
+}
