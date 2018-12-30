@@ -90,7 +90,7 @@ export const c6 = <C6 own1="foo" />;
 
 declare function mergeProps(
   stateProps: {||},
-  dispatchProps: {||},
+  dispatchProps: {| dispatch: Dispatch |},
   ownProps: OwnProps,
 ): PropsWithMergeProps;
 

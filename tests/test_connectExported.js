@@ -781,5 +781,79 @@ function testDispatchThunk() {
   }
 }
 
+function testMergePropsWithOnlyOwnProps() {
+  opaque type Action = 'action';
+  type Dispatch = Action => Action;
+
+  function ok() {
+    type OwnProps = {|
+      passthrough: string
+    |}
+    type Props = {
+      ...OwnProps
+    };
+    class Com extends React.Component<Props> {}
+
+    const mergeProps = (stateProps: {||}, dispatchProps: {|dispatch: Dispatch|}, ownProps: OwnProps) => {
+      return {
+        ...ownProps
+      }
+    }
+
+    const Connected = connect<Props, OwnProps, _,_,_,Dispatch>(null, null, mergeProps)(Com);
+    e.push(Connected);
+    <Connected passthrough="foo" />;
+  }
+
+  function wrongDispatch() {
+    type OwnProps = {|
+      passthrough: string
+    |}
+    type Props = {
+      ...OwnProps
+    };
+    class Com extends React.Component<Props> {}
+
+    const mergeProps = (stateProps: {||}, dispatchProps: {|dispatch: string|}, ownProps: OwnProps) => {
+      return {
+        ...ownProps
+      }
+    }
+
+    const Connected = connect<Props, OwnProps, _,_,_,Dispatch>(
+      null,
+      null,
+      //$ExpectError string [1] is incompatible with  `Dispatch` [2] in property `dispatch`
+      mergeProps
+    )(Com);
+    e.push(Connected);
+    <Connected passthrough="foo" />;
+  }
+
+  function noPassthrough() {
+    type OwnProps = {|
+      passthrough: string
+    |}
+    type Props = {
+      ...OwnProps
+    };
+    class Com extends React.Component<Props> {}
+
+    const mergeProps = (stateProps: {||}, dispatchProps: {|dispatch: Dispatch|}, ownProps: OwnProps) => {
+      return {
+        a: 1
+      }
+    }
+
+    const Connected = connect<Props, OwnProps, _,_,_,Dispatch>(
+      null,
+      null,
+      //$ExpectError property `passthrough` is missing in object literal [1] but exists in `OwnProps` [2]
+      mergeProps
+    )(Com);
+    e.push(Connected);
+    <Connected passthrough="foo" />;
+  }
+}
 
 // add test for mergeProps getting empty objects instead of empty type
