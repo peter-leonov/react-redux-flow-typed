@@ -661,8 +661,8 @@ function testDispatchFn() {
   type DispatchProps = {|
     action1: () => Action1
   |};
-  type MapDispathToPropsFn = Dispatch1 => DispatchProps;
-  const mapDispatchToProps: MapDispathToPropsFn = (dispatch: Dispatch1) => ({
+  type MapDispatchToPropsFn = Dispatch1 => DispatchProps;
+  const mapDispatchToProps: MapDispatchToPropsFn = (dispatch: Dispatch1) => ({
     action1: (...args) => dispatch(action1(...args))
   });
 
@@ -685,3 +685,101 @@ function testDispatchFn() {
   e.push(Connected2);
   <Connected2 />;
 }
+
+function testDispatchFnThunk() {
+  type State = {||}
+  type Action = {|
+    type: 'action'
+  |};
+  type DispatchAction = Action => Action;
+  type Thunk = (Dispatch, State) => Promise<number>
+  type DispatchThunk = Thunk => Promise<number>
+  type Dispatch = DispatchAction & DispatchThunk
+
+  const action = (): Action => ({ type: 'action' });
+  const thunk = (): Thunk => (d: Dispatch) => Promise.resolve(1);
+  type DispatchProps = {|
+    action: typeof action,
+    thunk: () => Promise<number>,
+  |};
+  type MapDispatchToPropsFn = Dispatch => DispatchProps;
+  const mapDispatchToProps: MapDispatchToPropsFn = (dispatch) => ({
+    action: () => dispatch(action()),
+    thunk: () => dispatch(thunk())
+  });
+
+  type Props = {
+    // in the case of a function passed to `connect()` Flow infers
+    // the same type of function is both the Props and DispatchProps objects
+    // (see the testDispatchThunk() to get the difference)
+    ...DispatchProps
+  };
+  class Com extends React.Component<Props> {}
+
+  const Connected = connect<Props, {||}, _,DispatchProps,_,Dispatch>(null, mapDispatchToProps)(Com);
+  e.push(Connected);
+  <Connected />;
+}
+
+function testDispatchThunk() {
+  type State = {||}
+  type Action = {|
+    type: 'action'
+  |};
+  type DispatchAction = Action => Action;
+  type Thunk = (Dispatch, State) => Promise<number>
+  type DispatchThunk = Thunk => Promise<number>
+  type Dispatch = DispatchAction & DispatchThunk
+
+  const action = (): Action => ({ type: 'action' });
+  const thunk = (): Thunk => (d: Dispatch) => Promise.resolve(1);
+
+  function differentDispatchPropsAreOK() {
+    type DispatchProps = {|
+      action: typeof action,
+      // here the property returns a thunk...
+      thunk: () => Thunk,
+    |};
+    const mapDispatchToProps = {
+      action,
+      thunk
+    };
+
+    type Props = {
+      action: typeof action,
+      // ... and here the property returns a return value of thunk
+      // as dispatch calls it for us with `dispatch` and `getState`
+      thunk: () => Promise<number>,
+    };
+    class Com extends React.Component<Props> {}
+
+    const Connected = connect<Props, {||}, _,DispatchProps,_,Dispatch>(null, mapDispatchToProps)(Com);
+    e.push(Connected);
+    <Connected />;
+  }
+
+  function sameDispatchPropsAreErroneous() {
+    type DispatchProps = {|
+      action: typeof action,
+      //$ExpectError here the property returns a thunk...
+      thunk: () => Thunk,
+    |};
+    const mapDispatchToProps = {
+      action,
+      thunk
+    };
+
+    type Props = {
+      // trying to pass the not passed to dispatch types (against the redux dispatch monad)
+      ...DispatchProps,
+    };
+    class Com extends React.Component<Props> {}
+
+    const Connected = connect<Props, {||}, _,DispatchProps,_,Dispatch>(null, mapDispatchToProps)(Com);
+    e.push(Connected);
+    <Connected />;
+  }
+}
+
+
+// add test for mergeProps getting empty objects instead of empty type
