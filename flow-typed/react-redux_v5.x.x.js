@@ -151,21 +151,21 @@ declare module "react-redux" {
 
   // In this case DP is an object of functions which has been bound to dispatch
   // by the given mapDispatchToProps function.
-  declare export function connect<-P, -OP, -SP, -DP, S, D>(
+  declare export function connect<-P, -OP, -SP: {||}, -DP, S, D>(
     mapStateToProps: null | void,
     mapDispatchToProps: MapDispatchToPropsFn<D, OP, DP>,
-    mergeProps: MergeProps<P, OP, SP, DP>,
-    options?: ?Options<S, OP, SP, P>,
+    mergeProps: MergeProps<P, OP, {||}, DP>,
+    options?: ?Options<S, OP, {||}, P>,
   ): Connector<P, OP, P>;
 
   // In this case DP is an object of action creators not yet bound to dispatch,
   // this difference is not important in the vanila redux,
   // but in case of usage with redux-thunk, the return type may differ.
-  declare export function connect<-P, -OP, -SP, -DP, S, D>(
+  declare export function connect<-P, -OP, -SP: {||}, -DP, S, D>(
     mapStateToProps: null | void,
     mapDispatchToProps: DP,
-    mergeProps: MergeProps<P, OP, SP, $ObjMap<DP, Bind<D>>>,
-    options?: ?Options<S, OP, SP, P>,
+    mergeProps: MergeProps<P, OP, {||}, $ObjMap<DP, Bind<D>>>,
+    options?: ?Options<S, OP, {||}, P>,
   ): Connector<P, OP, P>;
 
   // In this case DP is an object of functions which has been bound to dispatch
