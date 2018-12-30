@@ -164,7 +164,7 @@ declare function mergeProps(
   ownProps: OwnProps,
 ): Props;
 
-export const C5 = connect<Props, OwnProps, State, _, _, _>(
+export const C5 = connect<Props, OwnProps, _, _, State, _>(
   mapStateToProps,
   mapDispatchToProps,
   mergeProps,
