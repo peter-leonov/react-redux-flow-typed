@@ -551,3 +551,30 @@ function testHoistConnectedComponent() {
   //$ExpectError property `myStatic1` is missing in statics
   Connected.notStatic;
 }
+
+function checkIfStateTypeIsRespectedAgain() {
+  type State = {num: number, str: string};
+
+  const mapStateToProps = (state: State) => {
+    return { // no error
+      str: state.num
+    }
+  };
+
+  type Props = {
+    str: string
+  };
+
+  class Com extends React.Component<Props> {
+    render() {
+      return <div>{this.props.str}</div>;
+    }
+  }
+
+  const Connected = connect(mapStateToProps)(Com);
+  // Here Flow reports that `str` is missing from props,
+  // while the real error is still the type mismatch,
+  // fixing the original issue fixes the wrongly titled error.
+  //$ExpectError
+  <Connected />;
+}
