@@ -791,6 +791,94 @@ function testDispatchThunk_onlyDispatchObject_sameDispatchPropsAreErroneous() {
   <Connected />;
 }
 
+function testDispatchThunk_StateAndDispatchObject_differentDispatchPropsAreOK() {
+  type State = {|
+    state1: 'state1'
+  |}
+  type Action = {|
+    type: 'action'
+  |};
+  type DispatchAction = Action => Action;
+  type Thunk = (Dispatch, State) => Promise<number>
+  type DispatchThunk = Thunk => Promise<number>
+  type Dispatch = DispatchAction & DispatchThunk
+
+  const action = (): Action => ({ type: 'action' });
+  const thunk = (): Thunk => (d: Dispatch) => Promise.resolve(1);
+
+  type StateProps = {|
+    state1: 'state1',
+  |};
+  const mapStateToProps = state => ({
+    state1: state.state1
+  })
+
+  type DispatchProps = {|
+    action: typeof action,
+    // here the property returns a thunk...
+    thunk: () => Thunk,
+  |};
+  const mapDispatchToProps = {
+    action,
+    thunk
+  };
+
+  type Props = {
+    ...StateProps,
+    action: typeof action,
+    // ... and here the property returns a return value of thunk
+    // as dispatch calls it for us with `dispatch` and `getState`
+    thunk: () => Promise<number>,
+  };
+  class Com extends React.Component<Props> {}
+
+  const Connected = connect<Props, {||}, _,DispatchProps,_,Dispatch>(mapStateToProps, mapDispatchToProps)(Com);
+  e.push(Connected);
+  <Connected />;
+}
+
+function testDispatchThunk_StateAndDispatchObject_sameDispatchPropsAreErroneous() {
+  type State = {||}
+  type Action = {|
+    type: 'action'
+  |};
+  type DispatchAction = Action => Action;
+  type Thunk = (Dispatch, State) => Promise<number>
+  type DispatchThunk = Thunk => Promise<number>
+  type Dispatch = DispatchAction & DispatchThunk
+
+  const action = (): Action => ({ type: 'action' });
+  const thunk = (): Thunk => (d: Dispatch) => Promise.resolve(1);
+
+  type StateProps = {|
+    state1: 'state1',
+  |};
+  const mapStateToProps = state => ({
+    state1: state.state1
+  })
+
+  type DispatchProps = {|
+    action: typeof action,
+    //$ExpectError here the property returns a thunk...
+    thunk: () => Thunk,
+  |};
+  const mapDispatchToProps = {
+    action,
+    thunk
+  };
+
+  type Props = {
+    ...StateProps,
+    // trying to pass the not passed to dispatch types (against the redux dispatch monad)
+    ...DispatchProps,
+  };
+  class Com extends React.Component<Props> {}
+
+  const Connected = connect<Props, {||}, _,DispatchProps,_,Dispatch>(mapStateToProps, mapDispatchToProps)(Com);
+  e.push(Connected);
+  <Connected />;
+}
+
 function testMergeProps_OnlyOwnProps_ok() {
   opaque type Action = 'action';
   type Dispatch = Action => Action;
