@@ -566,7 +566,7 @@ function testNoDispatch() {
 function testHoistConnectedComponent() {
   type OwnProps = {|
     passthrough: number,
-    passthroughWithDefaultProp: number,
+    passthroughWithDefaultProp?: number,
     forMapStateToProps: string
   |};
   type Props = {
@@ -594,7 +594,7 @@ function testHoistConnectedComponent() {
 
   const Connected = connect<Props, OwnProps, _,_,_,_>(mapStateToProps)(Com);
   e.push(Connected);
-  // $ExpectError should be OK without passthroughWithDefaultProp
+  // OK without passthroughWithDefaultProp
   <Connected passthrough={123} forMapStateToProps={'data'}/>;
   // OK with passthroughWithDefaultProp
   <Connected passthrough={123} passthroughWithDefaultProp={456} forMapStateToProps={'data'}/>;
