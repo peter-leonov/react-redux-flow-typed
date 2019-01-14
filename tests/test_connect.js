@@ -197,6 +197,50 @@ function testExactProps() {
   e.push(Connected2);
 }
 
+function testInexactOwnProps() {
+  type OwnProps = {
+    passthrough: number,
+    forMapStateToProps: string,
+  };
+  type Props = {
+    ...$Exact<OwnProps>, // to eliminate the cripy `undefined`
+    fromStateToProps: string
+  };
+
+  class Com extends React.Component<Props> {
+    render() {
+      return <div>{this.props.passthrough} {this.props.fromStateToProps}</div>;
+    }
+  }
+
+  type State = {a: number};
+  type InputProps = {
+    forMapStateToProps: string,
+    passthrough: number,
+  };
+
+  const mapStateToProps = (state: State, props: InputProps) => {
+    return {
+      fromStateToProps: 'str' + state.a
+    }
+  };
+
+  const Connected = connect<Props, OwnProps, _,_,_,_>(mapStateToProps)(Com);
+  e.push(Connected);
+  <Connected passthrough={123} forMapStateToProps={'data'} />;
+  //$ExpectError extraProp what exact props does not allow
+  <Connected passthrough={123} forMapStateToProps={321} extraProp={123}/>;
+  //$ExpectError wrong type for forMapStateToProps
+  <Connected passthrough={123} forMapStateToProps={321}/>;
+  //$ExpectError passthrough missing
+  <Connected forMapStateToProps={'data'} />;
+  //$ExpectError forMapStateToProps missing
+  <Connected passthrough={123}/>;
+  //$ExpectError takes in only React components
+  const Connected2 = connect<Props, OwnProps, _,_,_,_>(mapStateToProps)('');
+  e.push(Connected2);
+}
+
 function testWithStatelessFunctionalComponent() {
   type OwnProps = {|
     passthrough: number,
